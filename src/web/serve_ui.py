@@ -195,31 +195,13 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             
             # Get environment variables from .env file
             # Use fallback values if not found (for demo/development mode)
-            supabase_url = os.getenv('SUPABASE_URL', 'YOUR_SUPABASE_URL_HERE')
-            supabase_key = os.getenv('SUPABASE_KEY', 'YOUR_SUPABASE_ANON_KEY_HERE')
+            supabase_url = os.getenv('SUPABASE_URL', '{{SUPABASE_URL}}')
+            supabase_key = os.getenv('SUPABASE_KEY', '{{SUPABASE_KEY}}')
             
             # Replace placeholder values in HTML with actual credentials
             # This allows the frontend JavaScript to connect to Supabase
-            html_content = html_content.replace(
-                "const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';",
-                f"const SUPABASE_URL = '{supabase_url}';"
-            )
-            
-            html_content = html_content.replace(
-                "const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';",
-                f"const SUPABASE_ANON_KEY = '{supabase_key}';"
-            )
-            
-            # Update the configuration message to show actual values
-            html_content = html_content.replace(
-                "SUPABASE_URL = 'your_supabase_project_url'<br>",
-                f"SUPABASE_URL = '{supabase_url}'<br>"
-            )
-            
-            html_content = html_content.replace(
-                "SUPABASE_ANON_KEY = 'your_supabase_anon_key'",
-                f"SUPABASE_ANON_KEY = '{supabase_key}'"
-            )
+            html_content = html_content.replace('{{SUPABASE_URL}}', supabase_url)
+            html_content = html_content.replace('{{SUPABASE_KEY}}', supabase_key)
             
             # Send response
             self.send_response(200)
@@ -229,7 +211,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(html_content.encode('utf-8'))
             
             # Log the status
-            if supabase_url != 'YOUR_SUPABASE_URL_HERE' and supabase_key != 'YOUR_SUPABASE_ANON_KEY_HERE':
+            if not supabase_url.startswith('{{') and not supabase_key.startswith('{{'):
                 print('✅ Environment variables loaded successfully')
                 print(f'📊 Supabase URL: {supabase_url}')
                 print(f'🔑 Supabase Key: {supabase_key[:20]}...')

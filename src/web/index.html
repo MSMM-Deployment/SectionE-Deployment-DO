@@ -454,7 +454,7 @@
 
         .custom-dropdown {
             position: relative;
-            width: 280px;
+            width: 200px;
         }
 
         .dropdown-toggle {
@@ -4979,12 +4979,12 @@
             throw new Error('Authentication required');
         }
 
-        // Supabase Configuration - UPDATE THESE WITH YOUR CREDENTIALS
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        // Supabase Configuration - Injected via Environment Variables
+        const SUPABASE_URL = '{{SUPABASE_URL}}';
+        const SUPABASE_ANON_KEY = '{{SUPABASE_KEY}}';
         
         // Check if we're in development mode (for demo purposes)
-        const isDemoMode = SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE';
+        const isDemoMode = SUPABASE_URL === '{{SUPABASE_URL}}' || SUPABASE_URL.includes('{{');
         
         // Initialize Supabase client only if configured
         let supabase;
@@ -5130,12 +5130,14 @@
                 loadingState.innerHTML = `
                     <i class="fas fa-cog"></i>
                     <p><strong>Configuration Required</strong></p>
-                    <p>Please update the Supabase credentials in the JavaScript section:</p>
+                    <p>Please set these environment variables in your Netlify dashboard:</p>
                     <div style="font-family: monospace; background: #f3f4f6; padding: 1rem; margin: 1rem 0; border-radius: 4px; text-align: left;">
-                        SUPABASE_URL = 'https://clcufcjifbvpbtsczkmx.supabase.co'<br>
-                        SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsY3VmY2ppZmJ2cGJ0c2N6a214Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTMxODQyNSwiZXhwIjoyMDY2ODk0NDI1fQ.fQTie6YIgPMl_8bo2W6e6jCjk7tGxWFXdSZZj0RTNa0'
+                        <strong>Variable Name:</strong> SUPABASE_URL<br>
+                        <strong>Value:</strong> https://clcufcjifbvpbtsczkmx.supabase.co<br><br>
+                        <strong>Variable Name:</strong> SUPABASE_KEY<br>
+                        <strong>Value:</strong> eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsY3VmY2ppZmJ2cGJ0c2N6a214Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTMxODQyNSwiZXhwIjoyMDY2ODk0NDI1fQ.fQTie6YIgPMl_8bo2W6e6jCjk7tGxWFXdSZZj0RTNa0
                     </div>
-                    <p>You can find these in your Supabase project settings → API.</p>
+                    <p>Go to <strong>Site settings → Environment variables</strong> in your Netlify dashboard to add these.</p>
                     <br>
                     <button onclick="enableDemoMode()" style="background: #667eea; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
                         View Demo with Sample Data

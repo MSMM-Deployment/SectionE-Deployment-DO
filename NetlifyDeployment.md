@@ -74,13 +74,15 @@ This is **CRITICAL** for your application to work properly.
 
 **SUPABASE_URL**
 - **Key**: `SUPABASE_URL`
-- **Value**: Your Supabase project URL (e.g., `https://your-project.supabase.co`)
+- **Value**: `https://clcufcjifbvpbtsczkmx.supabase.co`
 - **Scopes**: Select "All scopes" or at minimum "Build time" and "Runtime"
 
 **SUPABASE_KEY**
 - **Key**: `SUPABASE_KEY`
-- **Value**: Your Supabase anon/public key
+- **Value**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsY3VmY2ppZmJ2cGJ0c2N6a214Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTMxODQyNSwiZXhwIjoyMDY2ODk0NDI1fQ.fQTie6YIgPMl_8bo2W6e6jCjk7tGxWFXdSZZj0RTNa0`
 - **Scopes**: Select "All scopes" or at minimum "Build time" and "Runtime"
+
+> 📖 **For detailed step-by-step configuration instructions, see**: `SUPABASE_NETLIFY_CONFIG.md`
 
 #### Optional Variables:
 
