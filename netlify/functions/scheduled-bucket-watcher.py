@@ -115,4 +115,10 @@ def handler(event, context):
     except Exception as e:
         error_msg = f"Scheduled bucket watcher error: {str(e)}"
         print(f"❌ {error_msg}")
-        return error_response(error_msg, 500) 
+        return error_response(error_msg, 500)
+
+# Netlify scheduled function configuration
+# This tells Netlify to run this function every 5 minutes
+config = {
+    "schedule": "*/5 * * * *"  # Every 5 minutes (cron syntax)
+}

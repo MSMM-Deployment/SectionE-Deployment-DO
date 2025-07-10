@@ -102,13 +102,14 @@ This is **CRITICAL** for your application to work properly.
 
 ## 🔧 Part 3: Advanced Configuration
 
-### Step 7: Install Scheduled Functions Plugin
-For the automatic resume processing to work:
+### Step 7: Verify Scheduled Functions Setup
+Netlify's scheduled functions are built-in and work automatically:
 
-1. Go to **"Plugins"** in the left sidebar
-2. Search for **"Scheduled Functions"**
-3. Click **"Install"** on `@netlify/plugin-scheduled-functions`
-4. The plugin configuration is already in your `netlify.toml` file
+1. The scheduled functions are already configured in your code
+2. **No plugin installation needed** - it's built into Netlify
+3. After deployment, go to **"Functions"** in your site dashboard
+4. You should see the scheduled function marked as **"Scheduled"**:
+   - `scheduled-bucket-watcher` (runs every 5 minutes)
 
 ### Step 8: Configure Redirects and Headers
 The `netlify.toml` file already contains the necessary configuration for:

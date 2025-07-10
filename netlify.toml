@@ -1,74 +1,34 @@
 [build]
-  # Build command - install Python dependencies and run build script
-  command = "pip install -r requirements.txt && python3 build.py"
-  
-  # Build output directory
-  publish = "dist"
-  
-  # Functions directory for serverless functions
-  functions = "netlify/functions"
+command = "pip install -r requirements.txt && python3 build.py"
+publish = "dist"
+functions = "netlify/functions"
 
 [build.environment]
-  # Python version for serverless functions
-  PYTHON_VERSION = "3.9"
+PYTHON_VERSION = "3.9"
 
-# Function configuration
 [functions]
-  # Set runtime for Python functions
-  python_runtime = "python3.9"
-  # Increase timeout for PDF generation and file processing
-  timeout = 30
-
-# Scheduled functions
-[[plugins]]
-  package = "@netlify/plugin-scheduled-functions"
-
-  [plugins.inputs]
-    # Run bucket watcher every 5 minutes
-    [[plugins.inputs.functions]]
-      name = "scheduled-bucket-watcher"
-      cron = "*/5 * * * *"  # Every 5 minutes
-
-# Redirects and rewrites
-[[redirects]]
-  # Redirect root to index.html
-  from = "/"
-  to = "/index.html"
-  status = 200
+directory = "netlify/functions"
+python_runtime = "python3.9"
+timeout = 30
 
 [[redirects]]
-  # API endpoints - redirect to serverless functions
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+from = "/"
+to = "/index.html"
+status = 200
 
 [[redirects]]
-  # Health check endpoint
-  from = "/health"
-  to = "/.netlify/functions/health"
-  status = 200
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
 
-# Headers for security and CORS
-[[headers]]
-  for = "/api/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+[[redirects]]
+from = "/health"
+to = "/.netlify/functions/health"
+status = 200
 
 [[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Environment variables (to be set in Netlify UI)
-# SUPABASE_URL
-# SUPABASE_KEY  
-# OPENAI_API_KEY
-# PORT (will be set automatically by Netlify)
-
-# Ignore files during build
-[build.ignore]
-  command = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
+for = "/api/*"
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type, Authorization"

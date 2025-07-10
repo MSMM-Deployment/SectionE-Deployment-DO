@@ -1,12 +1,9 @@
-# Core dependencies
 openai>=1.51.0
 python-dotenv>=1.0.0
 supabase>=2.7.0
 watchdog>=4.0.0
 Flask>=3.0.0
 requests>=2.31.0
-
-# PDF processing libraries
 pdfminer.six>=20231228
 PyPDF2>=3.0.1
 pymupdf>=1.24.0
@@ -14,40 +11,13 @@ pdfplumber>=0.11.0
 pdfrw==0.4
 reportlab>=4.2.0
 Pillow>=10.3.0
-
-# Word document processing libraries  
 python-docx>=1.1.0
 docx2txt>=0.8
 docxtpl>=0.18.0
 Jinja2>=3.1.0
-
-# Additional utility libraries
 python-dateutil>=2.8.2
 pytz>=2024.1
 pandas>=2.2.0
 numpy>=1.26.0
-
-# Web framework dependencies
 Werkzeug>=3.0.0
 click>=8.1.0
-
-# Optional: Comprehensive document processing (may have installation issues)
-# textract>=1.6.0
-
-# System Dependencies (install via brew/package manager):
-# For legacy .doc file support:
-#   brew install antiword
-# 
-# Alternative tools (optional):
-#   catdoc - not available via brew, install from source if needed
-#
-# Installation commands:
-#   macOS: brew install antiword
-#   Ubuntu/Debian: sudo apt-get install antiword
-#   CentOS/RHEL: sudo yum install antiword
-#
-# Verify installation:
-#   which antiword  # should return path to antiword executable
-#
-# Test .doc file processing:
-#   python3 -c "from enhanced_text_extractor import EnhancedTextExtractor; print('antiword available:', EnhancedTextExtractor().extract_text_with_fallback.__doc__)"
