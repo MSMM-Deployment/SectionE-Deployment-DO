@@ -35,7 +35,7 @@ class SupabaseTemplateDownloader:
     """Downloads and manages templates from Supabase storage"""
     
     def __init__(self, 
-                 local_templates_dir: str = "templates",
+                 local_templates_dir: Optional[str] = None,
                  bucket_name: str = "resume-templates",
                  cache_dir: Optional[str] = None):
         """
@@ -46,6 +46,13 @@ class SupabaseTemplateDownloader:
             bucket_name: Supabase bucket name where templates are stored
             cache_dir: Directory to cache downloaded templates (default: temp dir)
         """
+        # Use project root path for Netlify compatibility
+        if local_templates_dir is None:
+            # Get the project root (3 levels up from this file)
+            current_file = Path(__file__)
+            project_root = current_file.parent.parent
+            local_templates_dir = str(project_root / "templates")
+        
         self.local_templates_dir = Path(local_templates_dir)
         self.bucket_name = bucket_name
         

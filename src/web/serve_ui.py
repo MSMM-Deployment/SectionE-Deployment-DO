@@ -30,6 +30,35 @@ load_dotenv()
 # Import template downloader
 from utils.supabase_template_downloader import SupabaseTemplateDownloader
 
+def get_file_path(relative_path):
+    """
+    Get correct file path for both local development and Netlify serverless environment
+    
+    In Netlify Functions:
+    - Working directory is typically the project root
+    - HTML files are in dist/ directory
+    - Data and template files are copied to function-accessible locations
+    
+    Args:
+        relative_path: Path relative to project root (e.g., 'data/ParsedFiles/file.json')
+        
+    Returns:
+        Absolute path that works in current environment
+    """
+    # Check if we're running in Netlify Functions environment
+    is_netlify = os.getenv('NETLIFY') == 'true' or os.getenv('AWS_LAMBDA_FUNCTION_NAME')
+    
+    if is_netlify:
+        # In Netlify Functions, working directory is project root
+        # HTML files are in dist/, other files in their original locations
+        if relative_path.endswith('.html'):
+            if relative_path in ['index.html', 'login.html', 'signup.html']:
+                return os.path.join('dist', relative_path)
+        return relative_path
+    else:
+        # Local development - use absolute paths from project root
+        return os.path.join(project_root, relative_path)
+
 class UIHandler(http.server.SimpleHTTPRequestHandler):
     """Custom handler that injects environment variables into HTML"""
     
@@ -159,8 +188,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
         """
         try:
             # Read the HTML file from disk
-            # Use path relative to current working directory (project root)
-            html_file_path = os.path.join(os.path.dirname(__file__), 'index.html')
+            # Use correct path for both local and Netlify environments
+            html_file_path = get_file_path('index.html')
             with open(html_file_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             
@@ -217,7 +246,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
         """Serve the login page"""
         try:
             # Read the login HTML file
-            login_file_path = os.path.join(os.path.dirname(__file__), 'login.html')
+            login_file_path = get_file_path('login.html')
             with open(login_file_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             
@@ -238,7 +267,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
         """Serve the signup page"""
         try:
             # Read the signup HTML file
-            signup_file_path = os.path.join(os.path.dirname(__file__), 'signup.html')
+            signup_file_path = get_file_path('signup.html')
             with open(signup_file_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             
@@ -306,7 +335,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             from urllib.parse import unquote
             
             # Load parsed results from the JSON file created by section_e_parser.py
-            with open('data/ParsedFiles/real_parsed_results.json', 'r', encoding='utf-8') as f:
+            json_file_path = get_file_path('data/ParsedFiles/real_parsed_results.json')
+            with open(json_file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
             # Transform raw parser data into frontend-friendly format
@@ -359,8 +389,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             employee_name = unquote(employee_name)
             
             # Load parsed results
-            # Use path relative to project root
-            json_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'ParsedFiles', 'real_parsed_results.json')
+            # Use correct path for both local and Netlify environments
+            json_file_path = get_file_path('data/ParsedFiles/real_parsed_results.json')
             with open(json_file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
@@ -421,7 +451,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
                 # Fallback to local data if Supabase not configured
                 try:
                     # Load parsed results from local JSON file
-                    json_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'ParsedFiles', 'real_parsed_results.json')
+                    json_file_path = get_file_path('data/ParsedFiles/real_parsed_results.json')
                     with open(json_file_path, 'r', encoding='utf-8') as f:
                         data = json.load(f)
                     
@@ -1050,8 +1080,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             from urllib.parse import unquote
             
             # Load parsed results
-            # Use path relative to project root
-            json_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'ParsedFiles', 'real_parsed_results.json')
+            # Use correct path for both local and Netlify environments
+            json_file_path = get_file_path('data/ParsedFiles/real_parsed_results.json')
             with open(json_file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
@@ -1188,7 +1218,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             import json
             
             # Load templates metadata
-            templates_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'templates', 'templates.json')
+            templates_file_path = get_file_path('templates/templates.json')
             with open(templates_file_path, 'r', encoding='utf-8') as f:
                 templates_data = json.load(f)
             
@@ -1219,7 +1249,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             template_id = unquote(template_id)
             
             # Load templates metadata to find the file
-            templates_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'templates', 'templates.json')
+            templates_file_path = get_file_path('templates/templates.json')
             with open(templates_file_path, 'r', encoding='utf-8') as f:
                 templates_data = json.load(f)
             
@@ -1238,36 +1268,44 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(error_response.encode('utf-8'))
                 return
             
-            # Try to generate preview using pdf2image
+            # Try to generate preview using pdf2image (skip in serverless environment)
             try:
-                from pdf2image import convert_from_path
-                import io
+                # Check if we're in a serverless environment
+                is_netlify = os.getenv('NETLIFY') == 'true' or os.getenv('AWS_LAMBDA_FUNCTION_NAME')
                 
-                # Get template path (local or download from Supabase)
-                template_path = self.template_downloader.get_template_path(template_info['filename'])
-                if not template_path:
-                    raise Exception(f"Template not found: {template_info['filename']}")
-                
-                # Convert first page to image
-                images = convert_from_path(template_path, first_page=1, last_page=1, dpi=150)
-                
-                if images:
-                    # Convert to PNG bytes
-                    img_buffer = io.BytesIO()
-                    images[0].save(img_buffer, format='PNG')
-                    img_bytes = img_buffer.getvalue()
+                if not is_netlify:
+                    # Only try pdf2image in local development
+                    from pdf2image import convert_from_path
+                    import io
                     
-                    # Send image response
-                    self.send_response(200)
-                    self.send_header('Content-Type', 'image/png')
-                    self.send_header('Access-Control-Allow-Origin', '*')
-                    self.send_header('Content-Length', str(len(img_bytes)))
-                    self.end_headers()
-                    self.wfile.write(img_bytes)
-                    return
+                    # Get template path (local or download from Supabase)
+                    template_path = self.template_downloader.get_template_path(template_info['filename'])
+                    if not template_path:
+                        raise Exception(f"Template not found: {template_info['filename']}")
+                    
+                    # Convert first page to image
+                    images = convert_from_path(template_path, first_page=1, last_page=1, dpi=150)
+                    
+                    if images:
+                        # Convert to PNG bytes
+                        img_buffer = io.BytesIO()
+                        images[0].save(img_buffer, format='PNG')
+                        img_bytes = img_buffer.getvalue()
+                        
+                        # Send image response
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'image/png')
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                        self.send_header('Content-Length', str(len(img_bytes)))
+                        self.end_headers()
+                        self.wfile.write(img_bytes)
+                        return
+                else:
+                    # In serverless environment, skip pdf2image
+                    raise ImportError("pdf2image not available in serverless environment")
                 
             except ImportError:
-                # pdf2image not available, return placeholder
+                # pdf2image not available or in serverless environment
                 pass
             except Exception as e:
                 print(f"Error generating preview: {e}")
@@ -1308,7 +1346,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             employee_data = self.transform_resume_data(request_data)
             
             # Load template metadata
-            templates_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'templates', 'templates.json')
+            templates_file_path = get_file_path('templates/templates.json')
             with open(templates_file_path, 'r', encoding='utf-8') as f:
                 templates_data = json.load(f)
             
@@ -1399,7 +1437,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             employee_data = self.transform_resume_data(request_data)
             
             # Load template metadata
-            templates_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'templates', 'templates.json')
+            templates_file_path = get_file_path('templates/templates.json')
             with open(templates_file_path, 'r', encoding='utf-8') as f:
                 templates_data = json.load(f)
             
@@ -2679,7 +2717,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             print("🚀 Executing split_roles.py script...")
             
             # Execute the split_roles.py script with --apply flag
-            split_roles_path = os.path.join(os.path.dirname(__file__), '..', '..', 'utils', 'split_roles.py')
+            split_roles_path = get_file_path('utils/split_roles.py')
             result = subprocess.run(
                 ['python3', split_roles_path, '--apply'],
                 capture_output=True,
@@ -3219,7 +3257,7 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
                     return
             
             # Load existing templates
-            templates_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'templates', 'templates.json')
+            templates_file_path = get_file_path('templates/templates.json')
             print(f"📁 Loading templates from: {templates_file_path}")
             
             try:

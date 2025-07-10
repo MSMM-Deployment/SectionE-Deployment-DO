@@ -51,10 +51,12 @@ class SectionEPDFGenerator:
             self.use_supabase = False
             print("⚠️ No Supabase credentials found. Will use JSON fallback.")
         
-        self.template_path = "templates/Section E template.pdf"
-        self.output_dir = Path("OutputFiles/PDFs")
+        # Use project root relative paths for Netlify compatibility
+        project_root = Path(__file__).parent.parent.parent
+        self.template_path = str(project_root / "templates" / "Section E template.pdf")
+        self.output_dir = project_root / "OutputFiles" / "PDFs"
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.json_path = "ParsedFiles/real_parsed_results.json"
+        self.json_path = str(project_root / "data" / "ParsedFiles" / "real_parsed_results.json")
     
     def fetch_employee_by_id(self, employee_id: str) -> Optional[Dict]:
         """Fetch employee data by ID from Supabase or JSON fallback"""

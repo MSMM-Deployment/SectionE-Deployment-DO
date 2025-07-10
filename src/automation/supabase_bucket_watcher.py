@@ -63,7 +63,7 @@ class SupabaseBucketWatcher:
     
     def __init__(self, 
                  bucket_name="msmm-resumes",
-                 processed_log="data/processed_bucket_files.json",
+                 processed_log=None,
                  polling_interval=30):
         """
         Initialize the Supabase bucket watcher
@@ -76,7 +76,9 @@ class SupabaseBucketWatcher:
         self.bucket_name = bucket_name
         self.polling_interval = polling_interval
         
-        # File tracking
+        # File tracking - use project root path for Netlify compatibility
+        if processed_log is None:
+            processed_log = project_root / "data" / "processed_bucket_files.json"
         self.processed_log = Path(processed_log)
         self.processed_files = self.load_processed_files()
         self.processing_queue = set()  # Files currently being processed
@@ -84,12 +86,12 @@ class SupabaseBucketWatcher:
         # Track when watcher started to only process files uploaded after this time
         self.watcher_start_time = datetime.utcnow()
         
-        # Initialize trigger queue system
-        self.trigger_queue_dir = Path("data/trigger_queue")
+        # Initialize trigger queue system - use project root path for Netlify
+        self.trigger_queue_dir = project_root / "data" / "trigger_queue"
         self.trigger_queue_dir.mkdir(exist_ok=True)
         
-        # Set up temporary processing directory
-        self.temp_dir = Path("temp_processing")
+        # Set up temporary processing directory - use project root path
+        self.temp_dir = project_root / "temp_processing"
         self.temp_dir.mkdir(exist_ok=True)
         
         # Initialize Supabase client
