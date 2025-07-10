@@ -11,12 +11,12 @@ directory = "netlify/functions"
 
 [[redirects]]
 from = "/"
-to = "/.netlify/functions/index"
+to = "/index.html"
 status = 200
 
 [[redirects]]
-from = "/index.html"
-to = "/.netlify/functions/index"
+from = "/api/frontend-config"
+to = "/.netlify/functions/frontend-config"
 status = 200
 
 [[redirects]]

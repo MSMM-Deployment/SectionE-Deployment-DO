@@ -4979,17 +4979,37 @@
             throw new Error('Authentication required');
         }
 
-        // Supabase Configuration - Injected via Environment Variables
-        const SUPABASE_URL = '{{SUPABASE_URL}}';
-        const SUPABASE_ANON_KEY = '{{SUPABASE_KEY}}';
+        // Supabase Configuration - Loaded dynamically from API
+        let SUPABASE_URL = '';
+        let SUPABASE_ANON_KEY = '';
+        let isDemoMode = true;
+        let supabase = null;
         
-        // Check if we're in development mode (for demo purposes)
-        const isDemoMode = SUPABASE_URL === '{{SUPABASE_URL}}' || SUPABASE_URL.includes('{{');
-        
-        // Initialize Supabase client only if configured
-        let supabase;
-        if (!isDemoMode) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Load configuration from backend API
+        async function loadConfiguration() {
+            try {
+                const response = await fetch('/api/frontend-config');
+                const config = await response.json();
+                
+                if (config.supabaseConfigured) {
+                    SUPABASE_URL = config.supabaseUrl;
+                    SUPABASE_ANON_KEY = config.supabaseKey;
+                    isDemoMode = false;
+                    
+                    // Initialize Supabase client with real configuration
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase configured successfully');
+                    return true;
+                } else {
+                    console.log('⚠️ Supabase not configured, using demo mode');
+                    isDemoMode = true;
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Failed to load configuration:', error);
+                isDemoMode = true;
+                return false;
+            }
         }
 
         // Application State
@@ -5108,9 +5128,15 @@
                     // Try to continue anyway for partial functionality
                 }
 
-                if (isDemoMode) {
+                // Load configuration from API before proceeding
+                console.log('🔄 Loading configuration...');
+                const configLoaded = await loadConfiguration();
+                
+                if (isDemoMode || !configLoaded) {
+                    console.log('⚠️ Using demo mode');
                     showConfigurationMessage();
                 } else {
+                    console.log('✅ Configuration loaded, initializing application');
                     setupEventListeners();
                     await loadSection('employees');
                 }
