@@ -20,92 +20,381 @@
         }
 
         .container {
-            display: flex;
             min-height: 100vh;
+            background: #f1f5f9;
+            position: relative;
         }
 
         /* Sidebar Navigation */
         .sidebar {
-            width: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 280px;
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 25%, #334155 100%);
             color: white;
-            padding: 2rem 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 0;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, transparent 0%, rgba(59, 130, 246, 0.05) 50%, transparent 100%);
+            pointer-events: none;
+            animation: shimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
         }
 
         .sidebar h1 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin: 0;
+            padding: 2.5rem 2rem 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar h1 i {
+            margin-right: 0.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 1.5rem;
-            font-weight: 600;
         }
 
         .nav-section {
-            margin: 1rem 0;
+            flex: 1;
+            margin: 1.5rem 0 0 0;
+            padding: 0 1rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .nav-section::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .nav-section::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .nav-section::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .nav-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
+            margin: 0.375rem 0;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            position: relative;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
         }
 
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255,255,255,0.1);
-            border-left-color: #fff;
+        .nav-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 64, 175, 0.1) 100%);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 50%;
+            background: linear-gradient(to bottom, #ffffff, #e2e8f0);
+            border-radius: 2px;
         }
 
         .nav-item i {
-            margin-right: 0.75rem;
+            margin-right: 1rem;
             width: 20px;
             text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active i {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-item span {
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar User Section */
+        .sidebar-user {
+            margin-top: auto;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .user-info:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .user-avatar {
+            font-size: 2rem;
+            margin-right: 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .user-email {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.025em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        .user-status {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+            transition: left 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.2) 100%);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-btn:hover::before {
+            left: 0;
+        }
+
+        .logout-btn i {
+            margin-right: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .logout-btn:hover i {
+            transform: translateX(-2px);
+        }
+
+        /* Sidebar Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .main-content {
+                margin-left: 260px;
+            }
+            
+            .sidebar h1 {
+                font-size: 1.5rem;
+                padding: 2rem 1.5rem 1.25rem;
+            }
+            
+            .nav-item {
+                padding: 1rem 1.25rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .sidebar h1 {
+                font-size: 1.25rem;
+                padding: 1.5rem 1rem 1rem;
+            }
+            
+            .nav-item {
+                padding: 0.875rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .sidebar-user {
+                padding: 1rem;
+            }
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
             padding: 2rem;
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
         .header {
             background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
+            border: 1px solid #f1f5f9;
         }
 
         .search-container {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .search-box {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+            padding: 1rem 1.25rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            font-weight: 500;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            color: #374151;
         }
 
         .search-box:focus {
             outline: none;
             border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-box::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
         }
 
         .search-icon {
             position: absolute;
-            left: 0.75rem;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: #6b7280;
+            font-size: 1.1rem;
         }
 
         .suggestions {
@@ -140,16 +429,18 @@
         /* Filters */
         .filters {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            align-items: center;
         }
 
         .filter-group {
-            min-width: 180px;
             flex: 1;
-            max-width: 250px;
+            min-width: 200px;
         }
 
         .filter-label {
@@ -163,31 +454,37 @@
 
         .custom-dropdown {
             position: relative;
-            width: 100%;
+            width: 280px;
         }
 
         .dropdown-toggle {
             width: 100%;
-            min-height: 44px;
-            padding: 0.75rem 2.5rem 0.75rem 0.75rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 6px;
+            min-height: 48px;
+            padding: 0.875rem 3rem 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             background: white;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .dropdown-toggle:hover {
             border-color: #667eea;
+            background: #fafbfc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .dropdown-toggle.active {
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
         .dropdown-text {
@@ -283,48 +580,70 @@
         }
 
         .filter-count {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #6b7280;
-            margin-top: 0.25rem;
-            font-style: italic;
+            margin-top: 0.5rem;
+            font-weight: 500;
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .filters-left {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 3rem;
             align-items: flex-end;
-            flex: 1;
+            justify-content: center;
         }
 
         .filter-actions {
             display: flex;
-            align-items: flex-end;
-            gap: 0.5rem;
-            padding-bottom: 0.25rem;
-            flex-shrink: 0;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: center;
+            width: 100%;
         }
 
         .clear-filters-btn {
-            padding: 0.75rem 1rem;
+            padding: 0.5rem;
             background: #f8fafc;
-            border: 2px solid #e1e5e9;
+            border: 2px solid #e2e8f0;
             border-radius: 6px;
             color: #6b7280;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            width: 32px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.125rem; /* Align with dropdown buttons - label height (0.75rem + 0.375rem margin) */
+            position: relative;
+            flex-shrink: 0;
         }
 
         .clear-filters-btn:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e9;
-            color: #475569;
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
         }
 
         .clear-filters-btn i {
-            margin-right: 0.375rem;
+            margin-right: 0;
+            font-size: 0.75rem;
+        }
+
+        /* Override flex alignment for the clear button's parent filter group */
+        .clear-button-group {
+            align-self: flex-start;
+            margin-top: 0;
         }
 
 
@@ -338,18 +657,19 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
         }
 
         .upload-modal-content {
             background: white;
             margin: 5% auto;
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 90%;
             max-width: 600px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .upload-modal-header {
@@ -394,8 +714,8 @@
 
         .upload-area:hover,
         .upload-area.drag-over {
-            border-color: #667eea;
-            background: #f8fafc;
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
         .upload-area i {
@@ -405,7 +725,7 @@
         }
 
         .upload-area.drag-over i {
-            color: #667eea;
+            color: #3b82f6;
         }
 
         .upload-area-text {
@@ -484,18 +804,21 @@
 
         .upload-btn {
             padding: 0.75rem 1.5rem;
-            background: #10b981;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .upload-btn:hover {
-            background: #059669;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .upload-btn:disabled {
@@ -508,7 +831,7 @@
             background: #f3f4f6;
             color: #374151;
             border: 1px solid #d1d5db;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
@@ -516,6 +839,7 @@
 
         .cancel-btn:hover {
             background: #e5e7eb;
+            transform: translateY(-1px);
         }
 
         .upload-progress {
@@ -552,20 +876,21 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
         }
 
         .merge-modal-content {
             background: white;
             margin: 2% auto;
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 95%;
             max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .merge-modal-header {
@@ -613,7 +938,7 @@
 
         .merge-step h3 i {
             margin-right: 0.75rem;
-            color: #667eea;
+            color: #3b82f6;
         }
 
         .merge-step p {
@@ -641,12 +966,15 @@
         }
 
         .find-duplicates-btn {
-            background: #667eea;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .find-duplicates-btn:hover {
-            background: #5a6fd8;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .manual-select-btn {
@@ -657,6 +985,7 @@
 
         .manual-select-btn:hover {
             background: #e5e7eb;
+            transform: translateY(-1px);
         }
 
         .find-duplicates-btn i,
@@ -673,7 +1002,7 @@
         .merge-loading i {
             font-size: 2rem;
             margin-bottom: 1rem;
-            color: #667eea;
+            color: #3b82f6;
         }
 
         /* Script Output Styles */
@@ -719,12 +1048,15 @@
         }
 
         .refresh-data-btn {
-            background: #10b981;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .refresh-data-btn:hover {
-            background: #059669;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .close-output-btn {
@@ -734,6 +1066,7 @@
 
         .close-output-btn:hover {
             background: #4b5563;
+            transform: translateY(-1px);
         }
 
         .refresh-data-btn i,
@@ -1208,45 +1541,49 @@
         }
 
         .merge-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             background: #8b5cf6;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
         }
 
         .merge-btn:hover {
             background: #7c3aed;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
         }
 
         /* Delete Employee Button */
         .delete-employee-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             background: #dc2626;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-right: 0.75rem;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
         }
 
         .delete-employee-btn:hover {
             background: #b91c1c;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
         }
 
         .delete-employee-btn:disabled {
@@ -1257,24 +1594,26 @@
 
         /* Refresh Data Button */
         .refresh-data-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             background: #059669;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-right: 0.75rem;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
         }
 
         .refresh-data-btn:hover {
             background: #047857;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
         }
 
         .refresh-data-btn.spinning i {
@@ -1367,23 +1706,25 @@
         }
 
         .upload-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             background: #f59e0b;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
         }
 
         .upload-btn:hover {
             background: #d97706;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
         }
 
         .upload-btn .fa-chevron-down {
@@ -1450,89 +1791,204 @@
 
         /* Content Area */
         .content {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #f8fafc;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
+            padding: 1.5rem;
         }
 
         .content-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
-            padding: 1rem 1.5rem;
+            padding: 1.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        .content-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.025em;
         }
 
         .results-count {
             font-size: 0.9rem;
             opacity: 0.9;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 16px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
         }
 
         /* Table */
         .table-container {
             overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         th, td {
-            padding: 1rem 1.5rem;
+            padding: 1.75rem 2rem;
             text-align: left;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
             vertical-align: top;
-            min-height: 60px;
         }
 
         th {
-            background-color: #f8fafc;
-            font-weight: 600;
-            color: #374151;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             position: sticky;
             top: 0;
+            z-index: 10;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        tr:hover {
-            background-color: #f8fafc;
+        th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 12px;
+        }
+
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 12px;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .employee-name {
-            font-weight: 600;
-            color: #667eea;
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .employee-name:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
         }
 
         .team-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            padding: 0.375rem 0.875rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
             display: inline-block;
-            margin: 0.125rem 0.25rem 0.125rem 0;
+            margin: 0.125rem 0.375rem 0.125rem 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
-            line-height: 1.4;
+            max-width: 180px;
+            line-height: 1.3;
             vertical-align: middle;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .team-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
         }
 
         .team-badges-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.25rem;
+            gap: 0.375rem;
             align-items: center;
-            min-height: 28px;
+            line-height: 1.6;
         }
 
         .role-text {
-            color: #6b7280;
-            font-style: italic;
+            color: #4b5563;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .projects-count {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .projects-count:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Clickable row styling */
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .clickable-row:active {
+            transform: scale(0.995);
+        }
+
+        /* Table responsiveness improvements */
+        @media (max-width: 768px) {
+            th, td {
+                padding: 1rem 1.25rem;
+                font-size: 0.875rem;
+            }
+            
+            .employee-name {
+                font-size: 1rem;
+            }
+            
+            .team-badge {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.625rem;
+                max-width: 120px;
+            }
         }
 
         .experience-badge {
@@ -1575,20 +2031,22 @@
             display: flex;
             align-items: center;
             padding: 0.75rem 1.5rem;
-            background: #667eea;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-right: 1.5rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
         }
 
         .back-btn:hover {
-            background: #5a6fd8;
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
         }
 
         .back-btn i {
@@ -1609,9 +2067,16 @@
 
         .detail-section {
             background: #f8fafc;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 1.5rem;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .detail-section:hover {
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
         }
 
         .detail-section h3 {
@@ -1625,7 +2090,7 @@
 
         .detail-section h3 i {
             margin-right: 0.75rem;
-            color: #667eea;
+            color: #3b82f6;
             width: 20px;
             text-align: center;
         }
@@ -1665,10 +2130,10 @@
             position: absolute;
             top: 0;
             right: 0;
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             width: 24px;
             height: 24px;
             cursor: pointer;
@@ -1677,7 +2142,7 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .detail-item:hover .edit-icon {
@@ -1685,18 +2150,27 @@
         }
 
         .edit-icon:hover {
-            background: #5a6fd8;
+            background: #2563eb;
+            transform: scale(1.05);
         }
 
         .edit-mode input,
         .edit-mode textarea {
             width: 100%;
             padding: 0.5rem;
-            border: 2px solid #667eea;
-            border-radius: 4px;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
             font-size: 0.95rem;
             color: #374151;
             background: white;
+            transition: all 0.3s ease;
+        }
+
+        .edit-mode input:focus,
+        .edit-mode textarea:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .edit-mode textarea {
@@ -1745,10 +2219,10 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             width: 24px;
             height: 24px;
             cursor: pointer;
@@ -1757,7 +2231,7 @@
             align-items: center;
             justify-content: center;
             opacity: 0.7;
-            transition: opacity 0.2s ease;
+            transition: all 0.3s ease;
             z-index: 10;
         }
 
@@ -1766,7 +2240,8 @@
         }
 
         .edit-content-icon:hover {
-            background: #5a6fd8;
+            background: #2563eb;
+            transform: scale(1.05);
         }
 
         .loading-overlay {
@@ -1787,28 +2262,30 @@
             position: absolute;
             top: 0.5rem;
             right: 2.25rem;
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             border: none;
-            border-radius: 4px;
-            width: 20px;
-            height: 20px;
+            border-radius: 6px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
             font-size: 0.7rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.6;
-            transition: opacity 0.2s ease;
+            opacity: 0.7;
+            transition: all 0.3s ease;
             z-index: 10;
         }
 
         .project-item:hover .project-edit-icon {
             opacity: 1;
+            transform: scale(1.05);
         }
 
         .project-edit-icon:hover {
-            background: #5a6fd8;
+            background: #2563eb;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
         }
 
         .project-delete-icon {
@@ -1819,24 +2296,26 @@
             color: white;
             border: none;
             border-radius: 4px;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.6;
-            transition: opacity 0.2s ease;
+            opacity: 0.7;
+            transition: all 0.2s ease;
             z-index: 10;
         }
 
         .project-item:hover .project-delete-icon {
             opacity: 1;
+            transform: scale(1.05);
         }
 
         .project-delete-icon:hover {
             background: #b91c1c;
+            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
         }
 
         .project-delete-icon-disabled {
@@ -1847,14 +2326,14 @@
             color: white;
             border: none;
             border-radius: 4px;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             cursor: not-allowed;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.6;
+            opacity: 0.5;
             z-index: 10;
         }
 
@@ -1867,10 +2346,11 @@
         .edit-project-form {
             padding: 1rem;
             background: #f8fafc;
-            border-radius: 6px;
-            border: 2px solid #667eea;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
             margin-bottom: 1rem;
             position: relative;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
         }
 
         .qualification-field,
@@ -2345,7 +2825,7 @@
         }
 
         .create-resume-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -2377,7 +2857,8 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
             overflow-y: auto;
         }
 
@@ -2385,27 +2866,43 @@
             background-color: white;
             margin: 2% auto;
             padding: 0;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 90%;
             max-width: 900px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
             position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .section-e-modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             padding: 1.5rem 2rem;
-            border-radius: 12px 12px 0 0;
+            border-radius: 16px 16px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-e-modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0.3;
         }
 
         .section-e-modal-header h2 {
             margin: 0;
             font-size: 1.5rem;
             font-weight: 600;
+            position: relative;
+            z-index: 1;
         }
 
         .section-e-close {
@@ -2422,11 +2919,14 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .section-e-close:hover {
             background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
         }
 
         .section-e-modal-body {
@@ -2439,8 +2939,15 @@
             margin-bottom: 2rem;
             padding: 1.5rem;
             background: #f8fafc;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .section-e-form-section:hover {
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
         }
 
         .section-e-form-section h3 {
@@ -2454,7 +2961,7 @@
         }
 
         .section-e-form-section h3 i {
-            color: #667eea;
+            color: #3b82f6;
         }
 
         .section-e-form-group {
@@ -2483,8 +2990,8 @@
         .section-e-form-group textarea:focus,
         .section-e-form-group select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .section-e-form-group textarea {
@@ -2584,13 +3091,20 @@
         }
 
         .selected-project-item {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: white;
+            border: 2px solid #e2e8f0;
             border-radius: 8px;
-            padding: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .selected-project-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
         }
 
         .selected-project-content {
@@ -2637,22 +3151,24 @@
         }
 
         .add-custom-project-btn {
-            background: #6366f1;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
             padding: 12px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .add-custom-project-btn:hover {
-            background: #4f46e5;
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .find-relevant-projects-btn {
@@ -2672,6 +3188,87 @@
         .find-relevant-projects-btn:hover {
             background: #d97706;
             transform: translateY(-1px);
+        }
+
+        .ai-writeup-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ai-writeup-btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .use-this-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.2s ease;
+        }
+
+        .use-this-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .ai-rewrite-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.2s ease;
+        }
+
+        .ai-rewrite-btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .ai-generate-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ai-generate-btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         .projects-count-info {
@@ -2914,21 +3511,37 @@
             color: #374151;
         }
 
+        /* Modal Overlay Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
         /* Project Selection Modal Styles */
         .project-selection-modal {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             max-width: 800px;
             width: 90vw;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1001;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #projectSelectionModal {
@@ -2984,7 +3597,7 @@
 
         .selection-counter {
             font-weight: 600;
-            color: #059669;
+            color: #3b82f6;
         }
 
         .available-projects-list {
@@ -3011,11 +3624,13 @@
         .available-project-item:hover {
             border-color: #3b82f6;
             background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
         }
 
         .available-project-item.selected {
-            border-color: #059669;
-            background: #ecfdf5;
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
         .available-project-item.disabled {
@@ -3028,7 +3643,7 @@
             margin-top: 2px;
             width: 16px;
             height: 16px;
-            accent-color: #059669;
+            accent-color: #3b82f6;
         }
 
         .available-project-content {
@@ -3073,30 +3688,36 @@
             border: 1px solid #d1d5db;
             background: white;
             color: #374151;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .project-selection-cancel-btn:hover {
             background: #f9fafb;
+            transform: translateY(-1px);
         }
 
         .project-selection-add-btn {
             padding: 10px 20px;
-            background: #059669;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .project-selection-add-btn:hover {
-            background: #047857;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .project-selection-add-btn:disabled {
@@ -3107,18 +3728,19 @@
         /* Solicitation Analysis Modal Styles */
         .solicitation-analysis-modal {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             max-width: 900px;
             width: 90vw;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1001;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .solicitation-upload-area {
@@ -3313,7 +3935,7 @@
         .section-e-modal-footer {
             padding: 1.5rem 2rem;
             background: #f8fafc;
-            border-radius: 0 0 12px 12px;
+            border-radius: 0 0 16px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -3321,39 +3943,57 @@
         }
 
         .section-e-generate-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 0.75rem 2rem;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-e-generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            transition: left 0.3s ease;
         }
 
         .section-e-generate-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .section-e-generate-btn:hover::before {
+            left: 0;
         }
 
         .section-e-cancel-btn {
             background: #6b7280;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .section-e-cancel-btn:hover {
             background: #4b5563;
+            transform: translateY(-1px);
         }
 
         /* Template Selection Styles */
@@ -3375,14 +4015,14 @@
         }
 
         .template-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
         }
 
         .template-card.selected {
-            border-color: #667eea;
+            border-color: #3b82f6;
             background: #f8fafc;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .template-card.selected::before {
@@ -3392,7 +4032,7 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             width: 20px;
             height: 20px;
@@ -3638,26 +4278,19 @@
             </div>
 
             <!-- User Info and Logout -->
-            <div style="margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <div style="display: flex; align-items: center; margin-bottom: 1rem; color: rgba(255,255,255,0.8);">
-                    <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-right: 0.75rem;"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;" id="userEmail">user@example.com</div>
-                        <div style="font-size: 0.8rem; opacity: 0.8;">Logged in</div>
+            <div class="sidebar-user">
+                <div class="user-info">
+                    <i class="fas fa-user-circle user-avatar"></i>
+                    <div class="user-details">
+                        <div class="user-email" id="userEmail">user@example.com</div>
+                        <div class="user-status">
+                            <div class="status-indicator"></div>
+                            Online
+                        </div>
                     </div>
                 </div>
-                <button onclick="logout()" style="
-                    width: 100%;
-                    padding: 0.75rem;
-                    background: rgba(255,255,255,0.1);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    color: white;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-                    <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
                     Logout
                 </button>
             </div>
@@ -3716,12 +4349,15 @@
                             </div>
                             <div class="filter-count" id="teamCount">0 selected</div>
                         </div>
+                        
+                        <div class="filter-group clear-button-group">
+                            <button class="clear-filters-btn" id="clearFiltersBtn" title="Clear All Filters">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="filter-actions">
-                        <button class="clear-filters-btn" id="clearFiltersBtn">
-                            <i class="fas fa-times"></i> Clear All
-                        </button>
                         <div class="upload-dropdown">
                             <button class="upload-btn" id="uploadBtn">
                                 <i class="fas fa-upload"></i> Upload
@@ -3836,6 +4472,16 @@
                                 </div>
                             </div>
 
+                            <!-- Section E Resume -->
+                            <div class="detail-section">
+                                <h3><i class="fas fa-file-pdf"></i> Section E Resume</h3>
+                                <div class="section-e-actions">
+                                    <button class="create-resume-btn" onclick="openSectionEModal()">
+                                        <i class="fas fa-plus"></i> Create Section E Resume
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Education -->
                             <div class="detail-section">
                                 <h3><i class="fas fa-graduation-cap"></i> Education</h3>
@@ -3872,22 +4518,7 @@
                             <!-- Projects -->
                             <div class="detail-section">
                                 <h3><i class="fas fa-project-diagram"></i> Projects</h3>
-                                <div class="edit-content-wrapper">
-                                    <div id="detailProjects" class="detail-content">Loading...</div>
-                                    <button class="edit-content-icon" onclick="editProjectsField()">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Section E Resume -->
-                            <div class="detail-section">
-                                <h3><i class="fas fa-file-pdf"></i> Section E Resume</h3>
-                                <div class="section-e-actions">
-                                    <button class="create-resume-btn" onclick="openSectionEModal()">
-                                        <i class="fas fa-plus"></i> Create Section E Resume
-                                    </button>
-                                </div>
+                                <div id="detailProjects" class="detail-content">Loading...</div>
                             </div>
 
                             <!-- Meta Information -->
@@ -4055,6 +4686,9 @@
                         </button>
                         <button type="button" class="find-relevant-projects-btn" onclick="openSolicitationAnalysisModal()">
                             <i class="fas fa-search"></i> Find Relevant Projects
+                        </button>
+                        <button type="button" class="ai-writeup-btn" onclick="openAIWriteupModal()">
+                            <i class="fas fa-magic"></i> AI Writeup
                         </button>
                     </div>
                     <div class="projects-count-info">
@@ -5171,9 +5805,9 @@
             tableBody.innerHTML = filteredData.map((employee, index) => `
                 <tr class="clickable-row" onclick="showEmployeeDetail('${employee.employee_name ? employee.employee_name.replace(/'/g, '\\\'') : ''}')">
                     <td><span class="employee-name">${employee.employee_name || '-'}</span></td>
-                                            <td><span class="role-text">${deduplicateRoles(employee.role_in_contract) || '-'}</span></td>
-                    <td>${employee.firm_name ? renderTeamBadges(employee.firm_name) : '-'}</td>
-                    <td>${employee.total_projects || 0} projects</td>
+                    <td><span class="role-text">${deduplicateRoles(employee.role_in_contract) || '-'}</span></td>
+                    <td>${employee.firm_name ? renderTeamBadges(employee.firm_name) : '<span style="color: #9ca3af; font-style: italic;">No team assigned</span>'}</td>
+                    <td><span class="projects-count">${employee.total_projects || 0} project${(employee.total_projects || 0) !== 1 ? 's' : ''}</span></td>
                 </tr>
             `).join('');
         }
@@ -5562,7 +6196,7 @@
                     
                     html += `
                         <div class="project-item" data-project-id="${projectId}" data-has-real-id="${hasRealProjectId}">
-                            <button class="project-edit-icon" onclick="editIndividualProject('${projectId}')">
+                            <button class="project-edit-icon" onclick="editIndividualProject('${projectId}')" title="Edit Project">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
                             ${hasRealProjectId ? 
@@ -6731,7 +7365,10 @@
                                 constructionYear: project.construction_year,
                                 role: assignment.role_in_contract || project.description_role || '',
                                 description: project.description_scope || '',
+                                cost: project.description_cost || '',
+                                fee: project.description_fee || '',
                                 firm: team ? team.firm_name : '',
+                                performedWithSameFirm: false,
                                 isDatabase: true,
                                 assignmentId: assignment.assignment_id
                             };
@@ -6744,27 +7381,42 @@
                             id: 'demo_1',
                             title: 'Highway Bridge Replacement - Denver, CO',
                             year: '2023',
+                            professionalServicesYear: 2023,
+                            constructionYear: 2024,
                             role: 'Project Engineer',
                             description: 'Complete bridge replacement including design, permitting, and construction oversight for a major interstate crossing.',
+                            cost: '$12.5M',
+                            fee: '$1.2M',
                             firm: 'Engineering Solutions Inc',
+                            performedWithSameFirm: false,
                             isDatabase: false
                         },
                         {
                             id: 'demo_2',
                             title: 'Water Treatment Plant Upgrade - Boulder, CO',
                             year: '2022',
+                            professionalServicesYear: 2022,
+                            constructionYear: 2023,
                             role: 'Lead Engineer',
                             description: 'Major upgrades to municipal water treatment facility including new filtration systems and capacity expansion.',
+                            cost: '$8.7M',
+                            fee: '$850K',
                             firm: 'Engineering Solutions Inc',
+                            performedWithSameFirm: false,
                             isDatabase: false
                         },
                         {
                             id: 'demo_3',
                             title: 'Downtown Infrastructure Revitalization - Fort Collins, CO',
                             year: '2021',
+                            professionalServicesYear: 2021,
+                            constructionYear: 2022,
                             role: 'Project Engineer',
                             description: 'Comprehensive infrastructure improvements including utilities, roadways, and pedestrian enhancements.',
+                            cost: '$5.3M',
+                            fee: '$520K',
                             firm: 'Engineering Solutions Inc',
+                            performedWithSameFirm: false,
                             isDatabase: false
                         }
                     ];
@@ -6797,16 +7449,88 @@
                     projectDiv.className = 'selected-project-item';
                     projectDiv.innerHTML = `
                         <div class="selected-project-content">
-                            <div class="selected-project-title">${project.title}</div>
-                            <div class="selected-project-meta">
-                                <span><i class="fas fa-calendar"></i> ${project.year || 'No year'}</span>
-                                <span><i class="fas fa-user-tie"></i> ${project.role || 'No role specified'}</span>
-                                ${project.firm ? `<span><i class="fas fa-building"></i> ${project.firm}</span>` : ''}
+                            <!-- Project Title (Editable) -->
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                    <i class="fas fa-project-diagram" style="color: #6b7280; margin-right: 4px;"></i>Project Title & Location
+                                </label>
+                                <input type="text" 
+                                       id="projectTitle_${project.id}" 
+                                       value="${project.title || ''}" 
+                                       placeholder="Enter project title and location"
+                                       onchange="updateProjectField('${project.id}', 'title', this.value)"
+                                       style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.95rem; font-weight: 500;">
                             </div>
-                            <div class="project-year-fields-container" style="margin-top: 10px; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;">
-                                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                                        <label style="font-size: 0.8rem; color: #374151; font-weight: 500;">
+
+                            <!-- Project Description/Scope (Editable) -->
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                    <i class="fas fa-file-text" style="color: #6b7280; margin-right: 4px;"></i>Project Description/Scope
+                                </label>
+                                <textarea 
+                                       id="projectDescription_${project.id}" 
+                                       placeholder="Enter project description and scope of work"
+                                       onchange="updateProjectField('${project.id}', 'description', this.value)"
+                                       style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem; min-height: 80px; resize: vertical;">${project.description || ''}</textarea>
+                            </div>
+
+                            <!-- Role and Firm Fields -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                <div>
+                                    <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                        <i class="fas fa-user-tie" style="color: #6b7280; margin-right: 4px;"></i>Role in Project
+                                    </label>
+                                    <input type="text" 
+                                           id="projectRole_${project.id}" 
+                                           value="${project.role || ''}" 
+                                           placeholder="e.g., Project Manager"
+                                           onchange="updateProjectField('${project.id}', 'role', this.value)"
+                                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                        <i class="fas fa-building" style="color: #6b7280; margin-right: 4px;"></i>Firm Name
+                                    </label>
+                                    <input type="text" 
+                                           id="projectFirm_${project.id}" 
+                                           value="${project.firm || ''}" 
+                                           placeholder="e.g., MSMM Engineering LLC"
+                                           onchange="updateProjectField('${project.id}', 'firm', this.value)"
+                                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
+                                </div>
+                            </div>
+
+                            <!-- Project Cost and Fee -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                <div>
+                                    <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                        <i class="fas fa-dollar-sign" style="color: #6b7280; margin-right: 4px;"></i>Project Cost
+                                    </label>
+                                    <input type="text" 
+                                           id="projectCost_${project.id}" 
+                                           value="${project.cost || ''}" 
+                                           placeholder="e.g., $2.5M"
+                                           onchange="updateProjectField('${project.id}', 'cost', this.value)"
+                                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                        <i class="fas fa-receipt" style="color: #6b7280; margin-right: 4px;"></i>Professional Fee
+                                    </label>
+                                    <input type="text" 
+                                           id="projectFee_${project.id}" 
+                                           value="${project.fee || ''}" 
+                                           placeholder="e.g., $250K"
+                                           onchange="updateProjectField('${project.id}', 'fee', this.value)"
+                                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
+                                </div>
+                            </div>
+
+                            <!-- Year Fields -->
+                            <div style="margin-bottom: 12px; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div>
+                                        <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
                                             <i class="fas fa-briefcase" style="color: #6b7280; margin-right: 4px;"></i>Professional Services Year
                                         </label>
                                         <input type="number" 
@@ -6816,10 +7540,10 @@
                                                min="1950" 
                                                max="2030"
                                                onchange="updateProjectYear('${project.id}', 'professional', this.value)"
-                                               style="padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem; width: 100%;">
+                                               style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
                                     </div>
-                                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                                        <label style="font-size: 0.8rem; color: #374151; font-weight: 500;">
+                                    <div>
+                                        <label style="display: block; font-size: 0.8rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
                                             <i class="fas fa-hammer" style="color: #6b7280; margin-right: 4px;"></i>Construction Year
                                         </label>
                                         <input type="number" 
@@ -6829,11 +7553,13 @@
                                                min="1950" 
                                                max="2030"
                                                onchange="updateProjectYear('${project.id}', 'construction', this.value)"
-                                               style="padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem; width: 100%;">
+                                               style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;">
                                     </div>
                                 </div>
                             </div>
-                            <div class="project-checkbox-container" style="margin-top: 10px; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+
+                            <!-- Same Firm Checkbox -->
+                            <div style="padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
                                 <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #374151; cursor: pointer;">
                                     <input type="checkbox" 
                                            id="sameFireChkbox_${project.id}" 
@@ -6885,6 +7611,19 @@
             if (project) {
                 project.performedWithSameFirm = isChecked;
                 console.log(`Project ${projectId} - Performed with same firm: ${isChecked}`);
+            }
+        }
+
+        function updateProjectField(projectId, fieldName, value) {
+            const project = sectionESelectedProjects.find(p => p.id === projectId);
+            if (project) {
+                project[fieldName] = value;
+                console.log(`Project ${projectId} - ${fieldName}: ${value}`);
+                
+                // For title changes, also update the display title if needed
+                if (fieldName === 'title') {
+                    project.title = value;
+                }
             }
         }
 
@@ -7089,6 +7828,8 @@
                 constructionYear: null,
                 role: employeeRoles[0] || 'Project Role',
                 description: 'Project description...',
+                cost: '',
+                fee: '',
                 firm: employeeFirms[0] || '',
                 isDatabase: false,
                 isCustom: true,
@@ -8720,7 +9461,481 @@
         document.addEventListener('DOMContentLoaded', function() {
             setupDragAndDrop();
         });
+
+        // AI Writeup Functions
+        let allProjects = [];
+        let selectedAIProject = null;
+
+        async function openAIWriteupModal() {
+            if (sectionESelectedProjects.length >= 5) {
+                alert('You can only select up to 5 projects.');
+                return;
+            }
+            
+            if (!currentEmployeeData) {
+                alert('No employee data available.');
+                return;
+            }
+
+            // Show modal first
+            document.getElementById('aiWriteupModal').style.display = 'block';
+            
+            // Load all projects
+            await loadAllProjects();
+        }
+
+        function closeAIWriteupModal() {
+            document.getElementById('aiWriteupModal').style.display = 'none';
+            // Reset the selected project when closing the main modal
+            selectedAIProject = null;
+        }
+
+        async function loadAllProjects() {
+            try {
+                const response = await fetch('/api/all-projects');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                allProjects = data.projects || [];
+                
+                populateAllProjectsList();
+            } catch (error) {
+                console.error('Error loading all projects:', error);
+                const allProjectsList = document.getElementById('allProjectsList');
+                allProjectsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Failed to load projects.</p>
+                        <p style="font-size: 0.875rem; margin-top: 10px;">Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function populateAllProjectsList() {
+            const allProjectsList = document.getElementById('allProjectsList');
+            
+            if (allProjects.length === 0) {
+                allProjectsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <i class="fas fa-project-diagram" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>No projects found in the database.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            allProjectsList.innerHTML = '';
+            
+            allProjects.forEach(project => {
+                const projectDiv = document.createElement('div');
+                projectDiv.className = 'available-project-item';
+                projectDiv.style.cssText = `
+                    border: 1px solid #e1e5e9;
+                    border-radius: 8px;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+                
+                projectDiv.onmouseover = () => {
+                    projectDiv.style.borderColor = '#667eea';
+                    projectDiv.style.backgroundColor = '#f8fafc';
+                };
+                
+                projectDiv.onmouseout = () => {
+                    projectDiv.style.borderColor = '#e1e5e9';
+                    projectDiv.style.backgroundColor = 'white';
+                };
+                
+                projectDiv.onclick = () => selectProject(project);
+                
+                const title = project.title_and_location || 'Untitled Project';
+                const scope = project.description_scope || 'No scope description available';
+                const employeeName = project.employee_name || 'Unknown Employee';
+                
+                projectDiv.innerHTML = `
+                    <div style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">
+                        ${title}
+                    </div>
+                    <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                        Employee: ${employeeName}
+                    </div>
+                    <div style="color: #4b5563; font-size: 0.875rem; line-height: 1.4;">
+                        <strong>Scope:</strong> ${scope.length > 150 ? scope.substring(0, 150) + '...' : scope}
+                    </div>
+                `;
+                
+                allProjectsList.appendChild(projectDiv);
+            });
+        }
+
+        function selectProject(project) {
+            selectedAIProject = project;
+            
+            // Show project details in action modal
+            const selectedProjectDetails = document.getElementById('selectedProjectDetails');
+            const title = project.title_and_location || 'Untitled Project';
+            const scope = project.description_scope || 'No scope description available';
+            const employeeName = project.employee_name || 'Unknown Employee';
+            
+            selectedProjectDetails.innerHTML = `
+                <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h3 style="margin: 0 0 1rem 0; color: #374151;">${title}</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Employee:</strong> <span style="color: #6b7280;">${employeeName}</span>
+                    </div>
+                    <div>
+                        <strong>Scope:</strong>
+                        <div style="background: white; padding: 1rem; border-radius: 4px; margin-top: 0.5rem; color: #4b5563; line-height: 1.5;">
+                            ${scope}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Close first modal and show action modal (but keep selectedAIProject)
+            document.getElementById('aiWriteupModal').style.display = 'none';
+            document.getElementById('aiProjectActionModal').style.display = 'block';
+        }
+
+        function closeAIProjectActionModal() {
+            document.getElementById('aiProjectActionModal').style.display = 'none';
+            // Don't reset selectedAIProject here - keep it for the rewrite workflow
+        }
+
+        function cancelAIWorkflow() {
+            // Cancel the entire AI workflow and reset everything
+            document.getElementById('aiProjectActionModal').style.display = 'none';
+            document.getElementById('aiRewriteModal').style.display = 'none';
+            document.getElementById('aiRewriteResultsModal').style.display = 'none';
+            selectedAIProject = null;
+        }
+
+        function useProjectAsIs() {
+            if (!selectedAIProject) {
+                alert('No project selected.');
+                return;
+            }
+            
+            // Add project to Section E resume with original scope
+            const projectForResume = {
+                id: selectedAIProject.project_id || `ai_selected_${Date.now()}`,
+                title: selectedAIProject.title_and_location || '',
+                description: selectedAIProject.description_scope || '',
+                year: '',
+                role: '',
+                firm: '',
+                cost: '',
+                fee: '',
+                professionalServicesYear: null,
+                constructionYear: null,
+                performedWithSameFirm: false,
+                isAISelected: true,
+                originalEmployeeName: selectedAIProject.employee_name
+            };
+            
+            sectionESelectedProjects.push(projectForResume);
+            updateSelectedProjectsDisplay();
+            updateProjectsCount();
+            
+            closeAIProjectActionModal();
+            showSuccessMessage(`Project "${selectedAIProject.title_and_location}" added to Section E resume!`);
+            selectedAIProject = null; // Reset after use
+        }
+
+        function openAIRewriteModal() {
+            if (!selectedAIProject) {
+                alert('No project selected.');
+                return;
+            }
+            
+            // Pre-populate current employee name
+            document.getElementById('aiRewritePersonName').value = currentEmployeeData.employee_name || '';
+            
+            // Close action modal and show rewrite modal
+            closeAIProjectActionModal();
+            document.getElementById('aiRewriteModal').style.display = 'block';
+        }
+
+        function closeAIRewriteModal() {
+            document.getElementById('aiRewriteModal').style.display = 'none';
+            // Clear form
+            document.getElementById('aiRewriteRole').value = '';
+            document.getElementById('aiRewritePersonName').value = '';
+            document.getElementById('aiRewriteKeywords').value = '';
+            // Don't reset selectedAIProject here - we might need it for the results
+        }
+
+        async function generateAIRewrites() {
+            if (!selectedAIProject) {
+                alert('No project selected.');
+                return;
+            }
+            
+            const role = document.getElementById('aiRewriteRole').value.trim();
+            const personName = document.getElementById('aiRewritePersonName').value.trim();
+            const keywords = document.getElementById('aiRewriteKeywords').value.trim();
+            
+            if (!role && !personName && !keywords) {
+                alert('Please enter at least one keyword or role.');
+                return;
+            }
+            
+            const keywordsList = [role, personName, keywords].filter(k => k).join(', ');
+            
+            try {
+                // Show loading
+                showSuccessMessage('Generating AI rewrites...');
+                
+                const response = await fetch('/api/ai-rewrite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        original_scope: selectedAIProject.description_scope,
+                        keywords: keywordsList
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Display the 3 rewritten versions
+                displayAIRewriteResults(data.rewritten_versions || []);
+                
+            } catch (error) {
+                console.error('Error generating AI rewrites:', error);
+                alert(`Failed to generate AI rewrites: ${error.message}`);
+            }
+        }
+
+        function displayAIRewriteResults(versions) {
+            const rewriteResults = document.getElementById('rewriteResults');
+            
+            if (!versions || versions.length === 0) {
+                rewriteResults.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <p>No rewrite versions were generated.</p>
+                    </div>
+                `;
+                closeAIRewriteModal();
+                document.getElementById('aiRewriteResultsModal').style.display = 'block';
+                return;
+            }
+            
+            rewriteResults.innerHTML = '';
+            
+            versions.forEach((version, index) => {
+                const versionDiv = document.createElement('div');
+                versionDiv.style.cssText = `
+                    border: 1px solid #e1e5e9;
+                    border-radius: 8px;
+                    padding: 1.5rem;
+                    margin-bottom: 1rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+                
+                versionDiv.onmouseover = () => {
+                    versionDiv.style.borderColor = '#667eea';
+                    versionDiv.style.backgroundColor = '#f8fafc';
+                };
+                
+                versionDiv.onmouseout = () => {
+                    versionDiv.style.borderColor = '#e1e5e9';
+                    versionDiv.style.backgroundColor = 'white';
+                };
+                
+                versionDiv.onclick = () => selectAIRewriteVersion(version);
+                
+                versionDiv.innerHTML = `
+                    <div style="font-weight: 600; color: #374151; margin-bottom: 1rem;">
+                        Version ${index + 1}
+                    </div>
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 4px; color: #4b5563; line-height: 1.5;">
+                        ${version}
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-check"></i> Select This Version
+                        </button>
+                    </div>
+                `;
+                
+                rewriteResults.appendChild(versionDiv);
+            });
+            
+            closeAIRewriteModal();
+            document.getElementById('aiRewriteResultsModal').style.display = 'block';
+        }
+
+        function selectAIRewriteVersion(rewrittenScope) {
+            if (!selectedAIProject) {
+                alert('No project selected.');
+                return;
+            }
+            
+            // Add project to Section E resume with rewritten scope
+            const projectForResume = {
+                id: selectedAIProject.project_id || `ai_rewritten_${Date.now()}`,
+                title: selectedAIProject.title_and_location || '',
+                description: rewrittenScope,
+                year: '',
+                role: '',
+                firm: '',
+                cost: '',
+                fee: '',
+                professionalServicesYear: null,
+                constructionYear: null,
+                performedWithSameFirm: false,
+                isAIRewritten: true,
+                originalEmployeeName: selectedAIProject.employee_name,
+                originalScope: selectedAIProject.description_scope
+            };
+            
+            sectionESelectedProjects.push(projectForResume);
+            updateSelectedProjectsDisplay();
+            updateProjectsCount();
+            
+            const projectTitle = selectedAIProject.title_and_location; // Store before reset
+            closeAIRewriteResultsModal();
+            showSuccessMessage(`AI-rewritten project "${projectTitle}" added to Section E resume!`);
+        }
+
+        function closeAIRewriteResultsModal() {
+            document.getElementById('aiRewriteResultsModal').style.display = 'none';
+            selectedAIProject = null;
+        }
     </script>
+
+    <!-- AI Writeup Modal -->
+    <div id="aiWriteupModal" class="modal-overlay" style="display: none;">
+        <div class="project-selection-modal">
+            <div class="project-selection-header">
+                <h2><i class="fas fa-magic"></i> AI Writeup - Select Project</h2>
+                <button class="close-modal-btn" onclick="closeAIWriteupModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="project-selection-content">
+                <div class="project-selection-info">
+                    <p>Select a project from across all employees to use or rewrite with AI:</p>
+                </div>
+                
+                <div class="all-projects-list" id="allProjectsList">
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading all projects...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-selection-footer">
+                <button class="project-selection-cancel-btn" onclick="closeAIWriteupModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Project Action Modal -->
+    <div id="aiProjectActionModal" class="modal-overlay" style="display: none;">
+        <div class="project-selection-modal">
+            <div class="project-selection-header">
+                <h2><i class="fas fa-cog"></i> Project Selected</h2>
+                <button class="close-modal-btn" onclick="cancelAIWorkflow()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="project-selection-content">
+                <div class="selected-project-details" id="selectedProjectDetails">
+                    <!-- Project details will be populated here -->
+                </div>
+                
+                <div class="ai-action-buttons" style="text-align: center; margin-top: 2rem;">
+                    <button class="use-this-btn" onclick="useProjectAsIs()">
+                        <i class="fas fa-check"></i> Use This
+                    </button>
+                    <button class="ai-rewrite-btn" onclick="openAIRewriteModal()">
+                        <i class="fas fa-magic"></i> AI Rewrite
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Rewrite Keywords Modal -->
+    <div id="aiRewriteModal" class="modal-overlay" style="display: none;">
+        <div class="project-selection-modal">
+            <div class="project-selection-header">
+                <h2><i class="fas fa-edit"></i> AI Rewrite - Enter Keywords</h2>
+                <button class="close-modal-btn" onclick="cancelAIWorkflow()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="project-selection-content">
+                <div class="rewrite-instructions">
+                    <p>Enter keywords to customize the project scope rewrite:</p>
+                </div>
+                
+                <div class="keyword-inputs">
+                    <div class="section-e-form-group">
+                        <label>Role (e.g., "Project Manager")</label>
+                        <input type="text" id="aiRewriteRole" placeholder="Enter role...">
+                    </div>
+                    <div class="section-e-form-group">
+                        <label>Person's Name (e.g., "John Smith")</label>
+                        <input type="text" id="aiRewritePersonName" placeholder="Enter person's name...">
+                    </div>
+                    <div class="section-e-form-group">
+                        <label>Other Keywords (comma-separated)</label>
+                        <textarea id="aiRewriteKeywords" rows="3" placeholder="Enter other relevant keywords..."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-selection-footer">
+                <button class="project-selection-cancel-btn" onclick="cancelAIWorkflow()">Cancel</button>
+                <button class="ai-generate-btn" onclick="generateAIRewrites()">
+                    <i class="fas fa-magic"></i> Generate Rewrites
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Rewrite Results Modal -->
+    <div id="aiRewriteResultsModal" class="modal-overlay" style="display: none;">
+        <div class="project-selection-modal" style="max-width: 1000px;">
+            <div class="project-selection-header">
+                <h2><i class="fas fa-list"></i> AI Rewrite Results - Choose Version</h2>
+                <button class="close-modal-btn" onclick="cancelAIWorkflow()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="project-selection-content">
+                <div class="rewrite-results" id="rewriteResults">
+                    <!-- AI rewrite results will be populated here -->
+                </div>
+            </div>
+            
+            <div class="project-selection-footer">
+                <button class="project-selection-cancel-btn" onclick="cancelAIWorkflow()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Upload Resumes Modal -->
     <div id="uploadModal" class="upload-modal">

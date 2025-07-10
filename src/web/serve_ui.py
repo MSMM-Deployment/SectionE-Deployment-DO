@@ -14,6 +14,11 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 import uuid
 from datetime import datetime
+import warnings
+
+# Suppress the pkg_resources deprecation warning that might cause issues
+warnings.filterwarnings("ignore", message="pkg_resources is deprecated as an API.*")
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="pkg_resources")
 
 # Add project root to Python path for src module imports
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -45,6 +50,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             self.serve_config_api()
         elif self.path == '/api/employees':
             self.serve_employees_api()
+        elif self.path == '/api/all-projects':
+            self.serve_all_projects_api()
         elif self.path.startswith('/api/employee/'):
             employee_name = self.path.split('/api/employee/')[1]
             self.serve_employee_detail_api(employee_name)
@@ -137,6 +144,8 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             self.serve_trigger_processing_api()
         elif self.path == '/api/upload-template':
             self.serve_upload_template_api()
+        elif self.path == '/api/ai-rewrite':
+            self.serve_ai_rewrite_api()
         else:
             self.send_error(404, "Not Found")
     
@@ -392,6 +401,125 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             error_response = json.dumps({"error": str(e)})
             self.send_response(500)
             self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(error_response.encode('utf-8'))
+    
+    def serve_all_projects_api(self):
+        """Serve all projects across all employees from Supabase database"""
+        try:
+            import json
+            from dotenv import load_dotenv
+            
+            # Load environment variables
+            load_dotenv()
+            
+            # Check if Supabase is configured
+            supabase_url = os.getenv('SUPABASE_URL')
+            supabase_key = os.getenv('SUPABASE_KEY')
+            
+            if not supabase_url or not supabase_key:
+                # Fallback to local data if Supabase not configured
+                try:
+                    # Load parsed results from local JSON file
+                    json_file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'ParsedFiles', 'real_parsed_results.json')
+                    with open(json_file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    
+                    all_projects = []
+                    for resume in data.get('resumes', []):
+                        employee_data = resume.get('data', {})
+                        employee_name = employee_data.get('name')
+                        
+                        if employee_name and employee_data.get('relevant_projects'):
+                            for project in employee_data.get('relevant_projects', []):
+                                all_projects.append({
+                                    'project_id': f"local_{len(all_projects)}",
+                                    'title_and_location': project.get('title_and_location', ''),
+                                    'description_scope': project.get('description', {}).get('scope', ''),
+                                    'employee_name': employee_name,
+                                    'employee_id': None,
+                                    'source': 'local'
+                                })
+                    
+                    response = json.dumps({'projects': all_projects}, indent=2)
+                except Exception as e:
+                    print(f"Error loading local data: {e}")
+                    response = json.dumps({'projects': []})
+                
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(response.encode('utf-8'))
+                return
+            
+            # Connect to Supabase and get all projects with employee info
+            from supabase import create_client
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            print("🔍 Fetching all projects from Supabase...")
+            
+            # First try to get all projects directly
+            try:
+                project_result = supabase.table('projects').select('project_id, title_and_location, description_scope').execute()
+                employee_result = supabase.table('employees').select('employee_id, employee_name').execute()
+                assignment_result = supabase.table('employee_assignments').select('employee_id, project_id').execute()
+                
+                print(f"📊 Found {len(project_result.data) if project_result.data else 0} projects")
+                print(f"📊 Found {len(employee_result.data) if employee_result.data else 0} employees")
+                print(f"📊 Found {len(assignment_result.data) if assignment_result.data else 0} assignments")
+                
+                # Build lookup maps
+                employees_map = {emp['employee_id']: emp['employee_name'] for emp in employee_result.data or []}
+                projects_map = {proj['project_id']: proj for proj in project_result.data or []}
+                
+                all_projects = []
+                for assignment in assignment_result.data or []:
+                    employee_id = assignment.get('employee_id')
+                    project_id = assignment.get('project_id')
+                    
+                    if employee_id in employees_map and project_id in projects_map:
+                        project = projects_map[project_id]
+                        employee_name = employees_map[employee_id]
+                        
+                        all_projects.append({
+                            'project_id': project.get('project_id'),
+                            'title_and_location': project.get('title_and_location', ''),
+                            'description_scope': project.get('description_scope', ''),
+                            'employee_name': employee_name,
+                            'employee_id': employee_id,
+                            'source': 'database'
+                        })
+                
+                print(f"✅ Processed {len(all_projects)} valid projects")
+                response = json.dumps({'projects': all_projects}, indent=2)
+                
+            except Exception as join_error:
+                print(f"⚠️ Join query failed, trying simpler approach: {join_error}")
+                # Fallback to simple query without joins
+                result = supabase.table('employee_assignments').select('*').execute()
+            
+                print(f"📊 Fallback query result: {len(result.data) if result.data else 0} assignments found")
+                
+                if result.data:
+                    # This is the fallback case - we have assignment data but need to fetch projects/employees separately
+                    response = json.dumps({'projects': []})  # For now, return empty for fallback
+                else:
+                    response = json.dumps({'projects': []})
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(response.encode('utf-8'))
+            
+        except Exception as e:
+            print(f"Error serving all projects API: {e}")
+            error_response = json.dumps({"error": str(e)})
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(error_response.encode('utf-8'))
     
@@ -1346,7 +1474,13 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
                 
         except ImportError as e:
             print(f"⚠️ DOCX generator dependencies not installed: {e}")
-            raise Exception("DOCX generation dependencies not available")
+            # Provide a more helpful error message
+            if 'docxtpl' in str(e) or 'jinja' in str(e).lower():
+                raise Exception("Jinja DOCX generation dependencies not available. Please run: pip install docxtpl")
+            elif 'docx' in str(e):
+                raise Exception("DOCX generation dependencies not available. Please run: pip install python-docx")
+            else:
+                raise Exception("DOCX generation dependencies not available")
         except Exception as e:
             print(f"⚠️ DOCX generation failed: {e}")
             raise
@@ -3162,6 +3296,152 @@ class UIHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             error_response = json.dumps({"error": str(e)})
+            self.wfile.write(error_response.encode('utf-8'))
+    
+    def serve_ai_rewrite_api(self):
+        """Serve AI rewrite API endpoint using OpenAI"""
+        try:
+            import json
+            import openai
+            from dotenv import load_dotenv
+            
+            # Load environment variables
+            load_dotenv()
+            
+            # Get OpenAI API key
+            openai_api_key = os.getenv('OPENAI_API_KEY')
+            if not openai_api_key:
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                error_response = json.dumps({
+                    "error": "OpenAI API key not configured. Please add OPENAI_API_KEY to your .env file."
+                })
+                self.wfile.write(error_response.encode('utf-8'))
+                return
+            
+            # Set up OpenAI client
+            client = openai.OpenAI(api_key=openai_api_key)
+            
+            # Read POST data
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            request_data = json.loads(post_data.decode('utf-8'))
+            
+            original_scope = request_data.get('original_scope', '')
+            keywords = request_data.get('keywords', '')
+            
+            if not original_scope:
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                error_response = json.dumps({"error": "Original scope is required"})
+                self.wfile.write(error_response.encode('utf-8'))
+                return
+            
+            # Create the prompt for OpenAI
+            prompt = f"""Rewrite the following civil engineering project scope while incorporating the provided keywords. Maintain the structure, tone, and technical nature suitable for a professional civil engineering proposal. Provide 3 alternative rewritten versions. Keep the scope realistic and context-aware.
+
+Original Scope:
+{original_scope}
+
+Keywords:
+{keywords}
+
+Please provide exactly 3 different rewritten versions, each maintaining the professional tone and technical accuracy of civil engineering work. Each version should incorporate the provided keywords naturally while preserving the essential project details."""
+            
+            print(f"🔄 Generating AI rewrites for scope with keywords: {keywords}")
+            
+            # Call OpenAI API
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a professional civil engineering technical writer who specializes in creating project scope descriptions for government proposals and Section E resumes."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1500,
+                temperature=0.7
+            )
+            
+            # Parse the response to extract the 3 versions
+            full_response = response.choices[0].message.content
+            
+            if not full_response:
+                full_response = original_scope  # Fallback to original
+            
+            # Try to split the response into 3 versions
+            # Look for common patterns like "Version 1:", "1.", etc.
+            import re
+            
+            # Split by version indicators
+            version_patterns = [
+                r'Version\s*\d+:?',
+                r'\d+\.',
+                r'Option\s*\d+:?',
+                r'Alternative\s*\d+:?'
+            ]
+            
+            versions = []
+            for pattern in version_patterns:
+                splits = re.split(pattern, full_response, flags=re.IGNORECASE)
+                if len(splits) > 3:  # Should have at least 4 parts (before first version + 3 versions)
+                    versions = [v.strip() for v in splits[1:4] if v.strip()]  # Take first 3 versions
+                    break
+            
+            # If splitting by patterns didn't work, try paragraph splitting
+            if len(versions) < 3:
+                paragraphs = [p.strip() for p in full_response.split('\n\n') if p.strip()]
+                if len(paragraphs) >= 3:
+                    versions = paragraphs[-3:]  # Take last 3 substantial paragraphs
+            
+            # Final fallback: split by double newlines and take substantial ones
+            if len(versions) < 3:
+                parts = [p.strip() for p in full_response.split('\n') if len(p.strip()) > 50]
+                versions = parts[:3] if len(parts) >= 3 else [full_response]
+            
+            # Ensure we have exactly 3 versions, pad if necessary
+            while len(versions) < 3:
+                if versions:
+                    # Create slight variations of the last version
+                    last_version = versions[-1]
+                    versions.append(f"Alternative: {last_version}")
+                else:
+                    versions.append(original_scope)  # Fallback to original
+            
+            # Take only first 3 versions
+            versions = versions[:3]
+            
+            print(f"✅ Generated {len(versions)} rewrite versions")
+            
+            # Return the rewritten versions
+            response_data = {
+                "success": True,
+                "rewritten_versions": versions,
+                "original_scope": original_scope,
+                "keywords": keywords
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(response_data, indent=2).encode('utf-8'))
+            
+        except Exception as e:
+            print(f"Error in AI rewrite API: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            error_response = json.dumps({
+                "error": str(e),
+                "message": "Failed to generate AI rewrites"
+            })
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
             self.wfile.write(error_response.encode('utf-8'))
     
     def log_message(self, format, *args):
