@@ -4988,7 +4988,7 @@
         // Load configuration from backend API
         async function loadConfiguration() {
             try {
-                const response = await fetch('/api/frontend-config');
+                const response = await fetch('/api/config');
                 const config = await response.json();
                 
                 if (config.supabaseConfigured) {

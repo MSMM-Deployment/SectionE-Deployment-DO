@@ -55,7 +55,10 @@ def handler(event, context):
         config_data = {
             "supabaseConfigured": is_configured,
             "hasUrl": bool(supabase_url),
-            "hasKey": bool(supabase_key)
+            "hasKey": bool(supabase_key),
+            "supabaseUrl": supabase_url if is_configured else "https://clcufcjifbvpbtsczkmx.supabase.co",
+            "supabaseKey": supabase_key if is_configured else "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsY3VmY2ppZmJ2cGJ0c2N6a214Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTMxODQyNSwiZXhwIjoyMDY2ODk0NDI1fQ.fQTie6YIgPMl_8bo2W6e6jCjk7tGxWFXdSZZj0RTNa0",
+            "demoMode": not is_configured
         }
         
         return success_response(config_data)

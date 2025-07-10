@@ -15,11 +15,6 @@ to = "/index.html"
 status = 200
 
 [[redirects]]
-from = "/api/frontend-config"
-to = "/.netlify/functions/frontend-config"
-status = 200
-
-[[redirects]]
 from = "/api/*"
 to = "/.netlify/functions/:splat"
 status = 200
