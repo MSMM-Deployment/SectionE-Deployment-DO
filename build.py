@@ -26,16 +26,37 @@ def create_dist_directory():
     return dist_dir
 
 def copy_html_files(dist_dir):
-    """Copy HTML files to dist directory"""
+    """Copy HTML files to dist directory with environment variable injection"""
     src_web_dir = Path("src/web")
+    
+    # Get environment variables for injection
+    supabase_url = os.getenv('SUPABASE_URL', '{{SUPABASE_URL}}')
+    supabase_key = os.getenv('SUPABASE_KEY', '{{SUPABASE_KEY}}')
     
     html_files = ["index.html", "login.html", "signup.html"]
     
     for html_file in html_files:
         src_file = src_web_dir / html_file
         if src_file.exists():
-            shutil.copy2(src_file, dist_dir / html_file)
+            # Read the HTML file
+            with open(src_file, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            # Inject environment variables
+            html_content = html_content.replace('{{SUPABASE_URL}}', supabase_url)
+            html_content = html_content.replace('{{SUPABASE_KEY}}', supabase_key)
+            
+            # Write the processed HTML to dist directory
+            with open(dist_dir / html_file, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            
             print(f"✅ Copied {html_file}")
+            
+            # Log environment variable injection status
+            if not supabase_url.startswith('{{') and not supabase_key.startswith('{{'):
+                print(f"🔑 Environment variables injected into {html_file}")
+            else:
+                print(f"⚠️  Environment variables not found - {html_file} will show demo mode")
         else:
             print(f"⚠️  Warning: {html_file} not found")
 
