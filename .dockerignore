@@ -1,0 +1,109 @@
+# =================================================================
+# Docker Ignore File for Section E Parser
+# Excludes unnecessary files from Docker build context
+# =================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache
+*.egg-info
+dist
+build
+.coverage
+htmlcov
+
+# Virtual environments
+venv
+env
+.venv
+.env
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Logs
+*.log
+logs
+
+# Temporary files
+tmp
+temp
+temp_processing
+
+# Documentation
+*.md
+!README.md
+docs
+
+# Deployment files
+deploy.sh
+Dockerfile
+docker-compose.yml
+nginx.conf
+sectionE-parser.service
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+env.example
+
+# Backup files
+backups
+*.backup
+
+# Test files
+tests
+*.test.py
+
+# Output files (keep structure but exclude content)
+data/*
+!data/Sample-SectionE
+OutputFiles/*
+ParsedFiles/*
+
+# Node modules (if any)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Legacy files
+legacy
+
+# Misc
+.coverage
+.nyc_output
+coverage
+
+# Large binary files
+*.pdf
+*.docx
+*.doc
+
+# Keep essential files
+!requirements.txt
+!package.json
+!start_server.py
+!load_database.py
+!parse_resumes.py
+!start_watcher.py 

@@ -1,0 +1,93 @@
+# =================================================================
+# Systemd Service File for Section E Parser
+# Digital Ocean Droplet Deployment
+# =================================================================
+# Copy this file to: /etc/systemd/system/sectionE-parser.service
+# Usage:
+#   sudo cp sectionE-parser.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable sectionE-parser
+#   sudo systemctl start sectionE-parser
+
+[Unit]
+Description=Section E Resume Parser & Database System
+Documentation=https://github.com/rmehta-msmm/SectionE-Parser
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=appuser
+Group=appuser
+WorkingDirectory=/home/appuser/SectionE-Parser
+
+# Environment setup
+Environment=PATH=/home/appuser/SectionE-Parser/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/home/appuser/SectionE-Parser
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONOPTIMIZE=2
+Environment=PYTHONDONTWRITEBYTECODE=1
+
+# Load environment variables from .env file
+EnvironmentFile=/home/appuser/SectionE-Parser/.env
+
+# Start command
+ExecStart=/home/appuser/SectionE-Parser/venv/bin/python start_server.py
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=60
+StartLimitBurst=3
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/appuser/SectionE-Parser
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sectionE-parser
+
+# Process management
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
+
+# =================================================================
+# Installation Instructions:
+# =================================================================
+# 1. Copy this file to systemd directory:
+#    sudo cp sectionE-parser.service /etc/systemd/system/
+# 
+# 2. Reload systemd configuration:
+#    sudo systemctl daemon-reload
+# 
+# 3. Enable service to start on boot:
+#    sudo systemctl enable sectionE-parser
+# 
+# 4. Start the service:
+#    sudo systemctl start sectionE-parser
+# 
+# 5. Check service status:
+#    sudo systemctl status sectionE-parser
+# 
+# 6. View logs:
+#    sudo journalctl -u sectionE-parser -f
+# 
+# 7. Stop service:
+#    sudo systemctl stop sectionE-parser
+# 
+# 8. Restart service:
+#    sudo systemctl restart sectionE-parser
+# ================================================================= 

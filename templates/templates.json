@@ -1,0 +1,97 @@
+{
+  "templates": [
+    {
+      "id": "default",
+      "name": "Default Template",
+      "description": "Standard Section E template with clean layout and professional design",
+      "filename": "Section E template.pdf",
+      "preview_image": null,
+      "is_default": true,
+      "type": "pdf"
+    },
+    {
+      "id": "template1",
+      "name": "Template 1",
+      "description": "Alternative Section E template with enhanced formatting",
+      "filename": "Section E template 1.pdf",
+      "preview_image": null,
+      "is_default": false,
+      "type": "pdf"
+    },
+    {
+      "id": "template_copy",
+      "name": "Template Copy",
+      "description": "Modified Section E template with adjusted layout",
+      "filename": "Section E template copy.pdf",
+      "preview_image": null,
+      "is_default": false,
+      "type": "pdf"
+    },
+    {
+      "id": "docx_template",
+      "name": "DOCX Template (Advanced Formatting)",
+      "description": "Word document template with superior formatting control, line breaks, and text wrapping",
+      "filename": "Template Section E Resume.docx",
+      "preview_image": null,
+      "is_default": false,
+      "type": "docx"
+    },
+    {
+      "id": "jinja_template",
+      "name": "Jinja Template (Dynamic Content)",
+      "description": "Jinja-based Word template with {{ employee.name }} style variables for flexible content placement",
+      "filename": "JinjaTemplate.docx",
+      "preview_image": null,
+      "is_default": false,
+      "type": "jinja_docx"
+    },
+    {
+      "id": "uploaded_918614fc",
+      "name": "Test Template",
+      "description": "Test description",
+      "filename": "test.pdf",
+      "preview_image": null,
+      "is_default": false,
+      "type": "pdf",
+      "uploaded_at": "2025-07-09T13:30:52.400987",
+      "original_filename": "test.pdf",
+      "file_size": 1024
+    },
+    {
+      "id": "uploaded_8d2d2f3c",
+      "name": "Test",
+      "description": "",
+      "filename": "test.pdf",
+      "preview_image": null,
+      "is_default": false,
+      "type": "pdf",
+      "uploaded_at": "2025-07-09T13:30:52.408514",
+      "original_filename": "test.pdf",
+      "file_size": 0
+    },
+    {
+      "id": "uploaded_9e3d95c5",
+      "name": "My Custom Template",
+      "description": "A custom template for testing",
+      "filename": "test_template.pdf",
+      "preview_image": null,
+      "is_default": false,
+      "type": "pdf",
+      "uploaded_at": "2025-07-09T13:34:36.429689",
+      "original_filename": "test_template.pdf",
+      "file_size": 1024
+    },
+    {
+      "id": "uploaded_14601e03",
+      "name": "Purple-Section 330E",
+      "description": "Purple Color beautiful",
+      "filename": "1752086150830_JinjaTemplate2.docx",
+      "preview_image": null,
+      "is_default": false,
+      "type": "jinja_docx",
+      "uploaded_at": "2025-07-09T13:35:51.322760",
+      "original_filename": "JinjaTemplate2.docx",
+      "file_size": 39682
+    }
+  ]
+}

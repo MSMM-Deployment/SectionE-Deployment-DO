@@ -1,0 +1,140 @@
+# =================================================================
+# Digital Ocean App Platform Configuration
+# Section E Resume Parser & Database System
+# =================================================================
+
+name: sectionE-parser
+
+# =================================================================
+# SERVICES CONFIGURATION
+# =================================================================
+services:
+- name: web
+  # Source configuration
+  source_dir: /
+  github:
+    repo: your-username/SectionE-Parser  # Update with your GitHub repo
+    branch: main
+    deploy_on_push: true
+  
+  # Runtime configuration
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs  # $5/month - upgrade to basic-xs ($12/month) for production
+  
+  # Application startup
+  run_command: python start_server.py
+  
+  # Health check configuration
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3
+  
+  # HTTP configuration
+  http_port: 8080  # App Platform requirement
+  
+  # Environment variables
+  envs:
+  # Application settings
+  - key: PORT
+    value: "8080"  # Required by App Platform
+  
+  # Production environment
+  - key: NODE_ENV
+    value: "production"
+  
+  - key: PYTHON_ENV
+    value: "production"
+  
+  # Database configuration (encrypted)
+  - key: SUPABASE_URL
+    value: "https://your-project-id.supabase.co"
+    type: SECRET
+  
+  - key: SUPABASE_KEY
+    type: SECRET
+    # Set this value in the App Platform UI for security
+  
+  # AI services (encrypted)
+  - key: OPENAI_API_KEY
+    type: SECRET
+    # Set this value in the App Platform UI for security
+  
+  # Optional: Python optimization
+  - key: PYTHONOPTIMIZE
+    value: "2"
+  
+  - key: PYTHONDONTWRITEBYTECODE
+    value: "1"
+  
+  # Routes configuration
+  routes:
+  - path: /
+    preserve_path_prefix: true
+
+# =================================================================
+# STATIC SITES (if serving static files separately)
+# =================================================================
+# Uncomment if you want to serve static files via CDN
+# static_sites:
+# - name: frontend
+#   source_dir: /src/web
+#   github:
+#     repo: your-username/SectionE-Parser
+#     branch: main
+#   output_dir: /
+#   index_document: index.html
+#   error_document: index.html
+#   routes:
+#   - path: /static
+
+# =================================================================
+# DATABASES (if using managed database instead of Supabase)
+# =================================================================
+# Uncomment if you want to use Digital Ocean Managed Database
+# databases:
+# - name: sectionE-db
+#   engine: PG
+#   version: "14"
+#   size: db-s-1vcpu-1gb  # $15/month
+#   num_nodes: 1
+
+# =================================================================
+# DOMAINS (optional - configure after deployment)
+# =================================================================
+# domains:
+# - domain: yourdomain.com
+#   type: PRIMARY
+#   zone: yourdomain.com
+# - domain: www.yourdomain.com  
+#   type: ALIAS
+#   zone: yourdomain.com
+
+# =================================================================
+# FEATURES
+# =================================================================
+features:
+- buildpack-stack: heroku-22
+
+# =================================================================
+# ALERTS (optional - for monitoring)
+# =================================================================
+alerts:
+- rule: CPU_UTILIZATION
+  operator: GREATER_THAN
+  value: 85
+  window: FIVE_MINUTES
+  
+- rule: MEM_UTILIZATION
+  operator: GREATER_THAN
+  value: 90
+  window: FIVE_MINUTES
+
+- rule: RESTART_COUNT
+  operator: GREATER_THAN
+  value: 5
+  window: ONE_HOUR 

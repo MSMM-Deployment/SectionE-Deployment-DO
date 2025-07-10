@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Detail Demo - Section E Creator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .demo-header h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .demo-section {
+            margin-bottom: 2rem;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        /* Sample Employee List */
+        .employee-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .employee-row {
+            padding: 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .employee-row:hover {
+            background-color: #f8fafc;
+            border-color: #667eea;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .role-text {
+            color: #6b7280;
+        }
+
+        .team-badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Employee Detail View Styles (copied from main file) */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .back-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .employee-detail-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .detail-sections {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .detail-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-section h3 {
+            color: #374151;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-section h3 i {
+            margin-right: 0.75rem;
+            color: #667eea;
+            width: 20px;
+            text-align: center;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-item label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-item span {
+            font-size: 0.95rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .detail-content {
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .project-item {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e1e5e9;
+        }
+
+        .project-item h4 {
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-item .project-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .project-item .project-description {
+            font-size: 0.9rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .team-item {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .team-roles {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        #employeeDetailView {
+            display: none;
+        }
+
+        /* Responsive Design - Mobile First Approach */
+        
+        /* Small devices (landscape phones, 576px and up) */
+        @media (max-width: 575.98px) {
+            body {
+                padding: 1rem;
+                font-size: 14px;
+            }
+            
+            .container {
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .demo-header {
+                padding: 1.5rem 1rem;
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+            
+            .demo-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .demo-header p {
+                font-size: 0.9rem;
+            }
+            
+            .employee-list {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .employee-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 1rem 0.75rem;
+                text-align: left;
+            }
+            
+            .employee-name {
+                font-size: 1.1rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .role-text {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .team-badge {
+                align-self: flex-start;
+                font-size: 0.75rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+            }
+            
+            .back-btn {
+                margin-right: 0;
+                padding: 0.875rem 1.5rem;
+                min-height: 44px; /* Touch target size */
+                font-size: 0.9rem;
+            }
+            
+            .employee-detail-container {
+                padding: 1rem;
+            }
+            
+            .detail-sections {
+                gap: 1.5rem;
+            }
+            
+            .detail-section {
+                padding: 1rem;
+                margin-bottom: 0;
+            }
+            
+            .detail-section h3 {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .detail-item {
+                margin-bottom: 0.75rem;
+            }
+            
+            .detail-item label {
+                font-size: 0.7rem;
+                margin-bottom: 0.375rem;
+            }
+            
+            .detail-item span {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .project-item,
+            .team-item {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .project-item h4 {
+                font-size: 0.95rem;
+                line-height: 1.3;
+            }
+            
+            .project-item .project-meta {
+                flex-direction: column;
+                gap: 0.25rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .project-item .project-description {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            
+            .team-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .team-name {
+                font-size: 0.95rem;
+            }
+            
+            .team-roles {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            body {
+                padding: 1.5rem;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .demo-header {
+                padding: 1.75rem;
+            }
+            
+            .employee-list {
+                padding: 1.25rem;
+            }
+            
+            .employee-row {
+                grid-template-columns: 2fr 2fr 1.5fr 0.8fr;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            
+            .detail-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .detail-header {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .back-btn {
+                margin-right: 1.5rem;
+            }
+            
+            .employee-detail-container {
+                padding: 1.5rem;
+            }
+            
+            .detail-section {
+                padding: 1.25rem;
+            }
+            
+            .project-item .project-meta {
+                flex-direction: row;
+                gap: 1rem;
+            }
+            
+            .team-item {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+        
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .employee-row,
+            .back-btn {
+                min-height: 44px;
+            }
+            
+            .employee-row {
+                cursor: default;
+            }
+            
+            .employee-row:active {
+                background-color: #f0f4f8;
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            .back-btn:active {
+                transform: translateY(1px);
+            }
+        }
+        
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .demo-header,
+            .employee-list,
+            .employee-detail-container {
+                box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1><i class="fas fa-database"></i> Employee Detail Feature Demo</h1>
+            <p>Click on any employee row below to see their detailed profile page</p>
+        </div>
+
+        <!-- Employee List View -->
+        <div id="listView">
+            <div class="demo-section">
+                <h2>Sample Employee List</h2>
+                <div class="employee-list">
+                    <div class="employee-row" onclick="showEmployeeDetail('Manish Mardia')">
+                        <div class="employee-name">Manish Mardia</div>
+                        <div class="role-text">Senior Civil Engineer, Project Manager</div>
+                        <div><span class="team-badge">ABC Engineering Solutions, XYZ Design Associates</span></div>
+                        <div>12 projects</div>
+                    </div>
+                    
+                    <div class="employee-row" onclick="showEmployeeDetail('Milan Mardia')">
+                        <div class="employee-name">Milan Mardia</div>
+                        <div class="role-text">Project Engineer</div>
+                        <div><span class="team-badge">Engineering Solutions Inc</span></div>
+                        <div>5 projects</div>
+                    </div>
+                    
+                    <div class="employee-row" onclick="showEmployeeDetail('Sarah Johnson')">
+                        <div class="employee-name">Sarah Johnson</div>
+                        <div class="role-text">Structural Engineer, Design Lead</div>
+                        <div><span class="team-badge">Metro Design Group</span></div>
+                        <div>8 projects</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Detail View -->
+        <div id="employeeDetailView">
+            <div class="detail-header">
+                <button class="back-btn" onclick="backToList()">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </button>
+                <h2 id="employeeDetailName">Employee Details</h2>
+            </div>
+            
+            <div class="employee-detail-container">
+                <div class="detail-sections">
+                    <!-- Personal Information -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Name</label>
+                                <span id="detailName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Total Experience</label>
+                                <span id="detailExperience">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Primary Role</label>
+                                <span id="detailRole">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Primary Firm</label>
+                                <span id="detailFirm">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                        <div id="detailEducation" class="detail-content">Loading...</div>
+                    </div>
+
+                    <!-- Professional Qualifications -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-certificate"></i> Professional Qualifications & Registrations</h3>
+                        <div id="detailRegistrations" class="detail-content">Loading...</div>
+                    </div>
+
+                    <!-- Teams & Firms -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-building"></i> Teams & Firms</h3>
+                        <div id="detailTeams" class="detail-content">Loading...</div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-project-diagram"></i> Projects</h3>
+                        <div id="detailProjects" class="detail-content">Loading...</div>
+                    </div>
+
+                    <!-- Meta Information -->
+                    <div class="detail-section">
+                        <h3><i class="fas fa-info-circle"></i> Meta Information</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Total Projects</label>
+                                <span id="detailTotalProjects">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Source Files</label>
+                                <span id="detailSourceFiles">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Last Updated</label>
+                                <span id="detailLastUpdated">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Database ID</label>
+                                <span id="detailId">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample employee data
+        const employeeData = {
+            'Manish Mardia': {
+                employee_name: 'Manish Mardia',
+                total_years_experience: 15,
+                role_in_contract: 'Senior Civil Engineer, Project Manager',
+                firm_name: 'ABC Engineering Solutions, XYZ Design Associates',
+                education: 'MS Civil Engineering, University of California, Berkeley (2008); BS Civil Engineering, IIT Delhi (2006)',
+                professional_qualifications: 'Professional Engineer (PE) - California; LEED AP BD+C; Project Management Professional (PMP)',
+                other_languages: 'Hindi, English, Spanish',
+                total_projects: 12,
+                source_resume_files: 'Manish-Mardia-1.pdf, Manish-Mardia-2.pdf',
+                updated_at: '2024-01-15T10:30:00Z',
+                id: 'emp_001',
+                projects: [
+                    {
+                        title_and_location: 'Golden Gate Bridge Seismic Retrofit - San Francisco, CA',
+                        professional_services_year: '2023',
+                        firm_name: 'ABC Engineering Solutions',
+                        role_in_contract: 'Project Manager',
+                        description_scope: 'Led seismic retrofit project for the iconic Golden Gate Bridge, managing a team of 25 engineers and coordinating with multiple stakeholders. Project involved advanced structural analysis, retrofitting strategies, and construction oversight.'
+                    },
+                    {
+                        title_and_location: 'Metro Transit Extension Project - Los Angeles, CA',
+                        professional_services_year: '2022',
+                        firm_name: 'XYZ Design Associates',
+                        role_in_contract: 'Senior Civil Engineer',
+                        description_scope: 'Designed structural elements for 12-mile metro transit extension including stations, tunnels, and elevated tracks. Responsible for foundation design, structural calculations, and regulatory compliance.'
+                    },
+                    {
+                        title_and_location: 'Sustainable Office Complex - Portland, OR',
+                        professional_services_year: '2021',
+                        firm_name: 'ABC Engineering Solutions',
+                        role_in_contract: 'Lead Structural Engineer',
+                        description_scope: 'Designed 15-story LEED Platinum certified office building with innovative sustainable features including green roof, rainwater harvesting, and high-performance structural systems.'
+                    }
+                ]
+            },
+            'Milan Mardia': {
+                employee_name: 'Milan Mardia',
+                total_years_experience: 8,
+                role_in_contract: 'Project Engineer',
+                firm_name: 'Engineering Solutions Inc',
+                education: 'MS Civil Engineering, Stanford University (2015); BS Civil Engineering, UC Davis (2013)',
+                professional_qualifications: 'Engineer in Training (EIT); AutoCAD Certified Professional',
+                other_languages: 'English, Gujarati',
+                total_projects: 5,
+                source_resume_files: 'Milan-Mardia-1.pdf',
+                updated_at: '2024-01-12T14:20:00Z',
+                id: 'emp_002',
+                projects: [
+                    {
+                        title_and_location: 'Highway 101 Bridge Replacement - Marin County, CA',
+                        professional_services_year: '2023',
+                        firm_name: 'Engineering Solutions Inc',
+                        role_in_contract: 'Project Engineer',
+                        description_scope: 'Assisted in design and analysis of new concrete bridge structure, including traffic analysis, load calculations, and construction documentation.'
+                    }
+                ]
+            },
+            'Sarah Johnson': {
+                employee_name: 'Sarah Johnson',
+                total_years_experience: 12,
+                role_in_contract: 'Structural Engineer, Design Lead',
+                firm_name: 'Metro Design Group',
+                education: 'MS Structural Engineering, MIT (2011); BS Civil Engineering, University of Texas (2009)',
+                professional_qualifications: 'Professional Engineer (PE) - Texas, California; Seismic Design Specialist',
+                other_languages: 'English, French',
+                total_projects: 8,
+                source_resume_files: 'Sarah-Johnson-1.pdf',
+                updated_at: '2024-01-10T09:15:00Z',
+                id: 'emp_003',
+                projects: [
+                    {
+                        title_and_location: 'Austin Convention Center Expansion - Austin, TX',
+                        professional_services_year: '2023',
+                        firm_name: 'Metro Design Group',
+                        role_in_contract: 'Design Lead',
+                        description_scope: 'Led structural design team for 200,000 sq ft convention center expansion, featuring long-span steel structures and innovative connection details.'
+                    },
+                    {
+                        title_and_location: 'High-Rise Residential Tower - Dallas, TX',
+                        professional_services_year: '2022',
+                        firm_name: 'Metro Design Group',
+                        role_in_contract: 'Structural Engineer',
+                        description_scope: 'Designed structural systems for 40-story residential tower including foundation, core walls, and wind resistance systems.'
+                    }
+                ]
+            }
+        };
+
+        function showEmployeeDetail(employeeName) {
+            const employee = employeeData[employeeName];
+            if (!employee) return;
+
+            // Hide list view and show detail view
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('employeeDetailView').style.display = 'block';
+
+            // Update header
+            document.getElementById('employeeDetailName').textContent = `${employeeName} - Employee Details`;
+
+            // Populate details
+            populateEmployeeDetails(employee);
+        }
+
+        function populateEmployeeDetails(employee) {
+            // Personal Information
+            document.getElementById('detailName').textContent = employee.employee_name;
+            document.getElementById('detailExperience').textContent = `${employee.total_years_experience} years`;
+            document.getElementById('detailRole').textContent = employee.role_in_contract;
+            document.getElementById('detailFirm').textContent = employee.firm_name;
+
+            // Education
+            document.getElementById('detailEducation').innerHTML = `<p>${employee.education}</p>`;
+
+            // Professional Qualifications & Registrations
+            let qualHtml = '';
+            if (employee.professional_qualifications) {
+                qualHtml += `<h4>Professional Qualifications:</h4><p>${employee.professional_qualifications}</p>`;
+            }
+            if (employee.other_languages) {
+                qualHtml += `<h4>Languages:</h4><p>${employee.other_languages}</p>`;
+            }
+            document.getElementById('detailRegistrations').innerHTML = qualHtml;
+
+            // Teams & Firms
+            const firms = employee.firm_name.split(',').map(f => f.trim());
+            const roles = employee.role_in_contract.split(',').map(r => r.trim());
+            let teamsHtml = '';
+            firms.forEach((firm, index) => {
+                const role = roles[index] || roles[0] || '';
+                teamsHtml += `
+                    <div class="team-item">
+                        <div>
+                            <div class="team-name">${firm}</div>
+                            <div class="team-roles">${role}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('detailTeams').innerHTML = teamsHtml;
+
+            // Projects
+            let projectsHtml = '';
+            if (employee.projects && employee.projects.length > 0) {
+                employee.projects.forEach(project => {
+                    projectsHtml += `
+                        <div class="project-item">
+                            <h4>${project.title_and_location}</h4>
+                            <div class="project-meta">
+                                <span><i class="fas fa-calendar"></i> ${project.professional_services_year}</span>
+                                <span><i class="fas fa-building"></i> ${project.firm_name}</span>
+                                <span><i class="fas fa-user-tie"></i> ${project.role_in_contract}</span>
+                            </div>
+                            <div class="project-description">${project.description_scope}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                projectsHtml = '<p style="color: #6b7280;">No projects information available</p>';
+            }
+            document.getElementById('detailProjects').innerHTML = projectsHtml;
+
+            // Meta Information
+            document.getElementById('detailTotalProjects').textContent = employee.total_projects;
+            document.getElementById('detailSourceFiles').textContent = employee.source_resume_files;
+            document.getElementById('detailLastUpdated').textContent = new Date(employee.updated_at).toLocaleDateString();
+            document.getElementById('detailId').textContent = employee.id;
+        }
+
+        function backToList() {
+            document.getElementById('employeeDetailView').style.display = 'none';
+            document.getElementById('listView').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 
