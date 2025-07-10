@@ -33,6 +33,12 @@ def copy_html_files(dist_dir):
     supabase_url = os.getenv('SUPABASE_URL', '{{SUPABASE_URL}}')
     supabase_key = os.getenv('SUPABASE_KEY', '{{SUPABASE_KEY}}')
     
+    # Debug: Print environment variable status
+    print(f"🔍 Debug: SUPABASE_URL = {supabase_url[:50]}..." if supabase_url != '{{SUPABASE_URL}}' else "🔍 Debug: SUPABASE_URL not found")
+    print(f"🔍 Debug: SUPABASE_KEY = {supabase_key[:50]}..." if supabase_key != '{{SUPABASE_KEY}}' else "🔍 Debug: SUPABASE_KEY not found")
+    print(f"🔍 Debug: NETLIFY env = {os.getenv('NETLIFY', 'not set')}")
+    print(f"🔍 Debug: All env vars: {list(os.environ.keys())[:10]}...")
+    
     html_files = ["index.html", "login.html", "signup.html"]
     
     for html_file in html_files:
