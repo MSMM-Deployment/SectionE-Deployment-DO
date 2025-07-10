@@ -8,8 +8,6 @@ PYTHON_VERSION = "3.9"
 
 [functions]
 directory = "netlify/functions"
-python_runtime = "python3.9"
-timeout = 30
 
 [[redirects]]
 from = "/"
